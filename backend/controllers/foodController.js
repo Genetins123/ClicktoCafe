@@ -47,6 +47,20 @@ const getFoodById = async (req, res) => {
   }
 };
 
+// GET IMAGE
+const getFoodImage = async (req, res) => {
+  try {
+    const food = await Food.findById(req.params.id);
+    if (!food || !food.image || !food.image.data) {
+      return res.status(404).json({ error: 'Image not found' });
+    }
+    res.set('Content-Type', food.image.contentType);
+    res.send(food.image.data);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch image' });
+  }
+};
+
 // UPDATE
 const updateFood = async (req, res) => {
   try {
@@ -95,4 +109,5 @@ module.exports = {
   getFoodById,
   updateFood,
   deleteFood,
+  getFoodImage,
 };

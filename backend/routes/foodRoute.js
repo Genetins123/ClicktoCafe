@@ -7,6 +7,7 @@ const {
   getFoodById,
   updateFood,
   deleteFood,
+  getFoodImage
 } = require('../controllers/foodController');
 
 // Multer config (for image uploads)
@@ -19,6 +20,7 @@ router.post('/add', upload.single('image'), addFood);
 // Read
 router.get('/', getAllFoods);         // Get all foods
 router.get('/:id', getFoodById);      // Get single food by ID
+router.get('/:id/image', getFoodImage); // Get food image
 
 // Update
 router.put('/:id', upload.single('image'), updateFood);

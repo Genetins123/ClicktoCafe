@@ -1,12 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function FoodList() {
-  const [foods, setFoods] = useState([
-    { id: 1, name: "Pizza", price: 200, category: "Fast Food", store: "Hotel A", image: "https://via.placeholder.com/60" },
-    { id: 2, name: "Burger", price: 150, category: "Fast Food", store: "Hotel B", image: "https://via.placeholder.com/60" },
-    { id: 3, name: "Biryani", price: 250, category: "Main Course", store: "Hotel A", image: "https://via.placeholder.com/60" },
-  ]);
-
+  const [foods, setFoods] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [editId, setEditId] = useState(null);
@@ -15,51 +10,90 @@ function FoodList() {
     price: "",
     category: "",
     store: "",
-    image: ""
+    imageFile: null
   });
 
-  // 🧠 Dynamic category list
-  const categories = [...new Set(foods.map(food => food.category))];
-
-  // 🗑 Delete food
-  const handleDelete = (id) => {
-    setFoods(foods.filter((food) => food.id !== id));
+  // Fetch data from API
+  const fetchFoods = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/food");
+      const data = await res.json();
+      const updatedFoods = data.map((food) => ({
+        ...food,
+        image: `http://localhost:5000/api/food/${food._id}/image`
+      }));
+      setFoods(updatedFoods);
+    } catch (err) {
+      console.error("Error fetching foods:", err);
+    }
   };
 
-  // ✏ Start editing
+  useEffect(() => {
+    fetchFoods();
+  }, []);
+
+  // Dynamic category list
+  const categories = [...new Set(foods.map((food) => food.category))];
+
+  // Delete food from DB
+  const handleDelete = async (id) => {
+    try {
+      await fetch(`http://localhost:5000/api/food/${id}`, { method: "DELETE" });
+      setFoods(foods.filter((food) => food._id !== id));
+    } catch (err) {
+      console.error("Error deleting food:", err);
+    }
+  };
+
+  // Start editing
   const handleEdit = (food) => {
-    setEditId(food.id);
+    setEditId(food._id);
     setEditForm({
       name: food.name,
       price: food.price,
       category: food.category,
       store: food.store,
-      image: food.image
+      imageFile: null
     });
   };
 
-  // ✅ Save edited food
-  const handleSave = (id) => {
-    setFoods(foods.map((food) =>
-      food.id === id ? { ...food, ...editForm } : food
-    ));
-    setEditId(null);
+  // Save edited food to DB
+  const handleSave = async (id) => {
+    const formData = new FormData();
+    formData.append("name", editForm.name);
+    formData.append("price", editForm.price);
+    formData.append("category", editForm.category);
+    formData.append("store", editForm.store);
+    if (editForm.imageFile) {
+      formData.append("image", editForm.imageFile);
+    }
+
+    try {
+      await fetch(`http://localhost:5000/api/food/${id}`, {
+        method: "PUT",
+        body: formData
+      });
+      await fetchFoods();
+      setEditId(null);
+    } catch (err) {
+      console.error("Error updating food:", err);
+    }
   };
 
-  // 🔍 Filter by search + category
-  const filteredFoods = foods.filter((food) =>
-    (food.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     food.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     food.store.toLowerCase().includes(searchTerm.toLowerCase()))
-    &&
-    (selectedCategory === "" || food.category === selectedCategory)
+  // Filter foods
+  const filteredFoods = foods.filter(
+    (food) =>
+      (food.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        food.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        food.store.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (selectedCategory === "" || food.category === selectedCategory)
   );
 
   return (
     <div className="p-4">
       <h2 className="text-xl font-semibold mb-4 text-center">Food List</h2>
 
-      {/* 🔍 Search & dynamic category filter */}
+      {/* Search & Filter */}
       <div className="flex flex-col sm:flex-row justify-center gap-2 mb-4">
         <input
           type="text"
@@ -75,11 +109,14 @@ function FoodList() {
         >
           <option value="">All Categories</option>
           {categories.map((category) => (
-            <option key={category} value={category}>{category}</option>
+            <option key={category} value={category}>
+              {category}
+            </option>
           ))}
         </select>
       </div>
 
+      {/* Table */}
       <table className="min-w-full bg-white">
         <thead>
           <tr className="border-b">
@@ -93,32 +130,39 @@ function FoodList() {
         </thead>
         <tbody>
           {filteredFoods.map((food) => (
-            <tr key={food.id} className="text-center border-t">
-              {editId === food.id ? (
+            <tr key={food._id} className="text-center border-t">
+              {editId === food._id ? (
                 <>
-                
                   <td className="py-2">
                     <input
                       type="text"
                       value={editForm.name}
-                      onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, name: e.target.value })
+                      }
                       className="border p-1 rounded"
                     />
                   </td>
-                    <td className="py-2">
+                  <td className="py-2">
                     <input
-                      type="text"
-                      value={editForm.image}
-                      onChange={(e) => setEditForm({ ...editForm, image: e.target.value })}
-                      className="border p-1 rounded w-24"
-                      placeholder="Image URL"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) =>
+                        setEditForm({
+                          ...editForm,
+                          imageFile: e.target.files[0]
+                        })
+                      }
+                      className="border p-1 rounded w-40"
                     />
                   </td>
                   <td>
                     <input
                       type="number"
                       value={editForm.price}
-                      onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, price: e.target.value })
+                      }
                       className="border p-1 rounded w-20"
                     />
                   </td>
@@ -126,7 +170,9 @@ function FoodList() {
                     <input
                       type="text"
                       value={editForm.category}
-                      onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, category: e.target.value })
+                      }
                       className="border p-1 rounded"
                     />
                   </td>
@@ -134,14 +180,16 @@ function FoodList() {
                     <input
                       type="text"
                       value={editForm.store}
-                      onChange={(e) => setEditForm({ ...editForm, store: e.target.value })}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, store: e.target.value })
+                      }
                       className="border p-1 rounded"
                     />
                   </td>
                   <td>
                     <button
                       className="text-green-600 mr-2"
-                      onClick={() => handleSave(food.id)}
+                      onClick={() => handleSave(food._id)}
                     >
                       Save
                     </button>
@@ -155,10 +203,13 @@ function FoodList() {
                 </>
               ) : (
                 <>
-                  
                   <td className="py-2">{food.name}</td>
                   <td className="py-2">
-                    <img src={food.image} alt={food.name} className="w-12 h-12 object-cover rounded" />
+                    <img
+                      src={food.image}
+                      alt={food.name}
+                      className="w-12 h-12 object-cover rounded"
+                    />
                   </td>
                   <td>{food.price}</td>
                   <td>{food.category}</td>
@@ -172,7 +223,7 @@ function FoodList() {
                     </button>
                     <button
                       className="text-red-600"
-                      onClick={() => handleDelete(food.id)}
+                      onClick={() => handleDelete(food._id)}
                     >
                       Delete
                     </button>
@@ -185,7 +236,9 @@ function FoodList() {
       </table>
 
       {filteredFoods.length === 0 && (
-        <p className="text-center text-gray-500 mt-4">No foods found matching your search/filter.</p>
+        <p className="text-center text-gray-500 mt-4">
+          No foods found matching your search/filter.
+        </p>
       )}
     </div>
   );
