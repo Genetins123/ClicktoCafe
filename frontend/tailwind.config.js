@@ -15,7 +15,7 @@ export default {
         grad3end: '#BC430D',
         grad4start: '#BC430D',
         grad4end: '#251704ff',
-        headtext:'#de7d16ff'
+        headtext:'#f97316'
       },
     },
   },
