@@ -10,18 +10,18 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Retrieve the user, making sure to get username and other info
-    const oldUser = await userModel.login(email, password); 
-    
+    // Use the static login method from userModel
+    const oldUser = await userModel.login(email, password);
+
     // Create token
     const token = createToken(oldUser._id);
-     
-    // Send back the username along with email and token
-    res.status(200).json({ 
+
+    // Send back name + email + token
+    res.status(200).json({
       _id: oldUser._id,
-      email: oldUser.email, 
-      username: oldUser.username, // Include username in response
-      token 
+      email: oldUser.email,
+      name: oldUser.name, // ✅ changed from username
+      token
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -30,28 +30,22 @@ const loginUser = async (req, res) => {
 
 // Signup user
 const signupUser = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { name, email, password } = req.body; // ✅ changed username → name
 
   try {
-    const newUser = await userModel.signup(email, password, username);
+    const newUser = await userModel.signup(name, email, password);
     const token = createToken(newUser._id);
-    
-    // Send back the username along with email and token
-    res.status(200).json({ 
-      email: newUser.email, 
-      username: newUser.username, 
-      token 
+
+    // Send back name + email + token
+    res.status(200).json({
+      _id: newUser._id,
+      email: newUser.email,
+      name: newUser.name, 
+      token
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-
-
-
-
-
-
 module.exports = { signupUser, loginUser };
- 

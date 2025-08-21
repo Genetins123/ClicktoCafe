@@ -1,12 +1,11 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt'); 
+const bcrypt = require('bcrypt');
 const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
-  username: { 
+  name: { 
     type: String,
     required: true,
-    unique: true,
     trim: true
   },
   email: {
@@ -22,10 +21,10 @@ const userSchema = new mongoose.Schema({
 });
 
 // Static signup method
-userSchema.statics.signup = async function (email, password, username) {
+userSchema.statics.signup = async function (name, email, password) {
   const normalizedEmail = email.toLowerCase();
 
-  if (!normalizedEmail || !password || !username) { 
+  if (!normalizedEmail || !password || !name) { 
     throw Error('All fields must be filled');
   }
 
@@ -38,20 +37,15 @@ userSchema.statics.signup = async function (email, password, username) {
     throw Error('Email is already in use');
   }
 
-  const usernameExists = await this.findOne({ username });
-  if (usernameExists) {
-    throw Error('The username is already taken, try a new username');
-  }
-
   if (!validator.isStrongPassword(password, { minLength: 8, minSymbols: 0 })) {
-    throw Error('Please provide a stronger password');
+    throw Error('Please provide a stronger password (min 8 chars, mix of letters & numbers).');
   }
 
   const salt = await bcrypt.genSalt();
   const hash = await bcrypt.hash(password, salt);
 
   try {
-    const user = await this.create({ email: normalizedEmail, password: hash, username });
+    const user = await this.create({ name, email: normalizedEmail, password: hash });
     return user;
   } catch (error) {
     console.error('Error creating user:', error);
@@ -77,8 +71,8 @@ userSchema.statics.login = async function (email, password) {
     throw Error('Invalid email or password');
   }
 
-  // Return user with username and email
-  return user;  // Will include email and username as stored in the database
+  // Return user with name and email
+  return user;
 };
- 
+
 module.exports = mongoose.model('User', userSchema);

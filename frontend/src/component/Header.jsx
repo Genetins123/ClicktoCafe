@@ -1,11 +1,13 @@
-'use client'
-import { Link, useLocation } from 'react-router-dom';  // useLocation import
-
-import { useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import {
   Dialog,
   DialogPanel,
   PopoverGroup,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems
 } from '@headlessui/react'
 import {
   Bars3Icon,
@@ -14,7 +16,27 @@ import {
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const location = useLocation(); // current path kidaikum
+  const [user, setUser] = useState(null)
+  const location = useLocation()
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+      } catch (err) {
+        console.error("Error parsing user:", err);
+      }
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    setUser(null);
+    window.location.href = "/loginpage";
+  };
 
   const navLinks = [
     { name: "Home", path: "/" },
@@ -25,11 +47,11 @@ export default function Header() {
 
   return (
     <header className="bg-white shadow-sm">
-      <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
+
         {/* Logo */}
-        <div className="flex  lg:flex-1">
-          <a href="/" className="-m-1.5 flex text-xl flex-row font-bold items-center gap-2  justify-center text-orange-500   p-1.5">
-            
+        <div className="flex lg:flex-1">
+          <a href="/" className="-m-1.5 flex text-xl flex-row font-bold items-center gap-2 text-orange-500 p-1.5">
             <img
               alt=""
               src="https://png.pngtree.com/png-clipart/20210309/original/pngtree-coffee-logo-png-image_5898135.jpg"
@@ -37,19 +59,6 @@ export default function Header() {
             />
             ClicktoCafe
           </a>
-          
-        </div>
-
-        {/* Mobile Menu Button */}
-        <div className="flex lg:hidden">
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(true)}
-            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-          >
-            <span className="sr-only">Open main menu</span>
-            <Bars3Icon aria-hidden="true" className="size-6" />
-          </button>
         </div>
 
         {/* Desktop Nav Links */}
@@ -60,8 +69,8 @@ export default function Header() {
               to={link.path}
               className={`font-bold ${
                 location.pathname === link.path
-                  ? "text-black"   // Active page -> black
-                  : "text-gray-500 hover:text-black" // Inactive -> gray
+                  ? "text-black"
+                  : "text-gray-500 hover:text-black"
               }`}
             >
               {link.name}
@@ -69,76 +78,56 @@ export default function Header() {
           ))}
         </PopoverGroup>
 
-        {/* Login Btn */}
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Link to="/LoginPage" className="
-            bg-gradient-to-r from-orange-500 to-yellow-400 
-            text-white font-semibold 
-            px-6 py-2 
-            rounded-full 
-            shadow-lg 
-            hover:from-orange-600 hover:to-yellow-500 
-            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500
-          ">
-            Log in <span aria-hidden="true">&rarr;</span>
-          </Link>
+        {/* Right side (Login or Dropdown) */}
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-4 items-center">
+          {user ? (
+            <Menu as="div" className="relative">
+              <MenuButton className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full hover:bg-gray-200 text-orange-600 font-semibold">
+                Hi, {user.name} 👋
+              </MenuButton>
+              <MenuItems className="absolute right-0 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                <div className="py-1">
+                  <MenuItem>
+                    {({ active }) => (
+                      <Link
+                        to="/profile"
+                        className={`block px-4 py-2 text-sm ${
+                          active ? "bg-gray-100" : ""
+                        }`}
+                      >
+                        Profile
+                      </Link>
+                    )}
+                  </MenuItem>
+                  <MenuItem>
+                    {({ active }) => (
+                      <button
+                        onClick={handleLogout}
+                        className={`w-full text-left px-4 py-2 text-sm ${
+                          active ? "bg-gray-100" : ""
+                        }`}
+                      >
+                        Logout
+                      </button>
+                    )}
+                  </MenuItem>
+                </div>
+              </MenuItems>
+            </Menu>
+          ) : (
+            <Link
+              to="/LoginPage"
+              className="bg-gradient-to-r from-orange-500 to-yellow-400 
+              text-white font-semibold px-6 py-2 
+              rounded-full shadow-lg 
+              hover:from-orange-600 hover:to-yellow-500
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+            >
+              Log in →
+            </Link>
+          )}
         </div>
       </nav>
-
-      {/* Mobile Menu */}
-      <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
-        <div className="fixed inset-0 z-50" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-          <div className="flex items-center justify-between">
-          <a href="/" className="-m-1.5 flex flex-row font-bold items-center gap-2  justify-center text-orange-500   p-1.5">
-            
-            <img
-              alt=""
-              src="https://png.pngtree.com/png-clipart/20210309/original/pngtree-coffee-logo-png-image_5898135.jpg"
-              className="h-8 w-auto"
-            />
-            ClicktoCafe
-          </a>
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(false)}
-              className="-m-2.5 rounded-md p-2.5 text-gray-700"
-            >
-              <span className="sr-only">Close menu</span>
-              <XMarkIcon aria-hidden="true" className="size-6" />
-            </button>
-          </div>
-
-          {/* Mobile Nav Links */}
-          <div className="mt-6 flow-root">
-            <div className="-my-6 divide-y divide-gray-500/10">
-              <div className="space-y-2 py-6">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.name}
-                    to={link.path}
-                    className={`block rounded-lg px-3 py-2 text-base font-semibold ${
-                      location.pathname === link.path
-                        ? "text-black"
-                        : "text-gray-500 hover:text-black"
-                    }`}
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-              </div>
-              <div className="py-6">
-                <Link
-                  to="/loginpage"
-                  className="block rounded-lg px-3 py-2.5 text-base font-semibold text-gray-500 hover:text-black"
-                >
-                  Log in
-                </Link>
-              </div>
-            </div>
-          </div>
-        </DialogPanel>
-      </Dialog>
     </header>
   )
 }
