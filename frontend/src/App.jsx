@@ -8,6 +8,8 @@ import Contact from './Pages/Contact';
 import About from './Pages/About'
 import Admin from './admin/components/Admin';
 import Takeaway from './Pages/takeaway';
+import MyAccountPage from './Pages/MyAccountPage';
+
 function App() {
   return (
     <>   
@@ -22,6 +24,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/takeaway" element={<Takeaway />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/account" element={<MyAccountPage />} />
       </Routes>
     </BrowserRouter>
    

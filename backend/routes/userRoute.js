@@ -55,5 +55,26 @@ router.delete('/', async (req, res) => {
   }
 });
 
+// ✅ UPDATE user by ID
+router.put('/:id', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    // DB la update
+    const updatedUser = await userModel.findByIdAndUpdate(
+      req.params.id,
+      { name, email, password },
+      { new: true, runValidators: true, select: "-password" } // password exclude
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    } 
+
+    res.status(200).json({ message: '✅ User updated successfully', user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update user' });
+  }
+});
 
 module.exports = router;

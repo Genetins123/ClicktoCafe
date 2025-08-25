@@ -8,7 +8,7 @@ import {
   MenuButton,
   MenuItem,
   MenuItems
-} from '@headlessui/react'
+} from '@headlessui/react'  
 import {
   Bars3Icon,
   XMarkIcon,
@@ -90,7 +90,7 @@ export default function Header() {
                   <MenuItem>
                     {({ active }) => (
                       <Link
-                        to="/profile"
+                        to="/account"
                         className={`block px-4 py-2 text-sm ${
                           active ? "bg-gray-100" : ""
                         }`}
