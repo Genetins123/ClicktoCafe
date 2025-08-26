@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Sidebar from "./Sidebar";
 import AddFood from "./AddFood";
-import AddStore from "./AddStore";
 import FoodList from "./FoodList";
-import StoreList from "./StoreList";
 import Dashboard from "./Dashboard";
+import AddRestaurant from "./AddRestaurant";
+import RestaurantList from "./RestaurantList";
 
 function Admin() {
   const [selectedMenu, setSelectedMenu] = useState("Dashboard");
@@ -16,9 +16,9 @@ function Admin() {
         
         {selectedMenu === "Dashboard" && <Dashboard />}
         {selectedMenu === "Add Food" && <AddFood />}
-        {selectedMenu === "Add Store" && <AddStore />}
+        {selectedMenu === "Add Store" && <AddRestaurant />}
         {selectedMenu === "Food List" && <FoodList />}
-        {selectedMenu === "Store List" && <StoreList />}
+        {selectedMenu === "Store List" && <RestaurantList />}
       </div>
     </div>
   );

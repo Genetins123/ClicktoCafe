@@ -6,6 +6,7 @@ require('dotenv').config();
 // Route imports
 const userRoutes = require('./routes/userRoute');   // User signup/login routes
 const foodRoutes = require('./routes/foodRoute');   // Food routes
+const restaurantRoutes = require('./routes/restaurantRoute'); // ✅ Restaurant routes
 
 const app = express();
 
@@ -20,13 +21,14 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use('/api/home/user', userRoutes);  // ✅ signup + login routes
-app.use('/api/food', foodRoutes);       // ✅ food routes
+app.use('/api/home/user', userRoutes);     // signup + login
+app.use('/api/food', foodRoutes);          // foods
+app.use('/api/restaurants', restaurantRoutes); // ✅ restaurants
 
 // Default route (optional)
 app.get('/', (req, res) => {
   res.send('🚀 API is running...');
-});
+}); 
 
 // Connect to MongoDB and start server
 mongoose.connect(process.env.MONGO_URI)

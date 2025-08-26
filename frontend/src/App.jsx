@@ -7,8 +7,8 @@ import Homepage from './Pages/Homepage';
 import Contact from './Pages/Contact';
 import About from './Pages/About'
 import Admin from './admin/components/Admin';
-import Takeaway from './Pages/takeaway';
 import MyAccountPage from './Pages/MyAccountPage';
+import Takeaway from './Pages/Takeaway';
 
 function App() {
   return (

@@ -1,5 +1,6 @@
 import FoodList from "./FoodList"
-import StoreList from "./StoreList"
+import RestaurantList from "./RestaurantList"
+import StoreList from "./RestaurantList"
 
 
 
@@ -12,7 +13,7 @@ function Dashboard(){
         <br /><br />
 
            <FoodList />
-           <StoreList />
+           <RestaurantList />
         </>
     )
 }
