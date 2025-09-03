@@ -1,64 +1,102 @@
-// src/components/HeroSection.jsx
+import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCompass } from '@fortawesome/free-solid-svg-icons';
 
-import BgImage from "../assets/h-bg.png";
-
-
-export default function HeroSection() {
+// 1. Import the image file
+import homeBg from '../assets/home-bg.webp'; // Update this path if your image is elsewhere
+import order from '../assets/order-icon.webp'
+import delivery from '../assets/delivery-icon.webp'
+import enjoy from '../assets/enjoy-icon.webp'
+const HeroSection = () => {
   return (
+    <>
+    
+    <section className="relative bg-white min-h items-center cover justify-center mt-10 mb-10 py-16 overflow-hidden">
+
+      {/* Background with the imported image */}
+      <div
+        className="absolute top-0 left-0 w-full h-full bg-cover bg-center"
+        style={{ backgroundImage: `url(${homeBg})` }}
+      ></div>
+
+      {/* Other background elements (you can remove or keep these) */}
+      <div className="absolute top-0 right-0 w-1/3 h-full bg-red-400 opacity-20 transform skew-x-12"></div>
+      <div className="absolute bottom-0 left-0 w-1/3 h-full bg-blue-400 opacity-20 transform -skew-x-12"></div>
+
+      {/* Main content */}
+      <div className="relative z-10 text-center p-4">
+        <h1 className="text-5xl font-bold text-gray-800 mb-2">ClickToCafe</h1>
+        <p className="text-xl text-gray-600 mb-8">Find Restaurants Near You</p>
+
+        <div className="flex justify-center items-center">
+          <div className="flex items-center bg-orange-200 rounded-lg p-4 shadow-md">
+            <div className="relative flex items-center">
+              <input
+                type="text"
+                placeholder="Search location here...."
+                className="pl-4 pr-10 w-full bg-gray-800 text-white placeholder-gray-400 p-2 rounded-l-lg focus:outline-none"
+              />
+              <FontAwesomeIcon
+                icon={faCompass}
+                className="absolute right-3 text-orange-500 text-lg cursor-pointer"
+              />
+            </div>
+            <button className="bg-orange-500 text-white px-4 py-2 rounded-r-lg hover:bg-orange-600">
+              Set Location
+            </button>
+            <span className="mx-2 text-gray-600">Or</span>
+            <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">
+              Pick From Map
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
 
 
-    <section
-  className="w-full min-h-[68vh] md:min-h-screen bg-cover bg-center" 
-  style={{ 
-    backgroundImage: `url(${BgImage})`,
-    backgroundPosition:`right`,
-    // backgroundPositionY:`-85px`
-  
-  }}
->
-  
-  <div className="block md:flex items-center justify-between">
-    {/* Text Section */}
-    <div className="max-w-2xl px-6 py-16 md:px-10 text-center md:text-left">
-      <h1 className="text-2xl md:text-4xl font-bold">
-        Multi Restaurant{" "}
-        <span className="md:text-orange-500 text-white">Food Ordering & Delivery</span>{" "}
-        Solution with Source Code
-      </h1>
-      <p className="md:text-gray-600  text-[#fcf1f1] font-bold mt-5">
-        Build your very own multi restaurant online food ordering & delivery
-        business with Stackfood’s complete source code & post-purchase
-        services.
-      </p>
-      <div className="mt-6 flex  sm:flex-row justify-center md:justify-start gap-4">
-       <button
-  className="px-6 py-3 sm:px-8 sm:py-3 rounded-full md:text-white text-orange-500 font-semibold shadow-xl md:shadow-lg 
-  md:bg-gradient-to-r from-orange-500 to-red-500 hover:bg-orange-100 active:bg-orange-200 transition text-sm sm:text-base
-  bg-[#fcf1f1]"
->
-  Buy Now →
-</button>
-
-<button
-  className="px-6 py-3 sm:px-8 sm:py-3 rounded-full font-semibold md:text-orange-500 text-[#fcf1f1]
-  md:border border-orange-400 shadow-xl md:shadow-md md:hover:bg-[#ffecec] active:bg-[#ffdada] transition text-sm sm:text-base border border-[#fcf1f1] "
->
-  View Demo →
-</button>
-
+    
+    <div className="flex justify-center items-center container mx-auto max-w-5xl ">
+      <div className="flex items-center space-x-16 pt-5">
+        <div className="text-center text-white">
+          <img src={order} alt="Order Online" width={100} height={100} className="mx-auto" />
+          <h2 className="text-xl font-bold mt-4">Order Online</h2>
+          <p className="text-sm mt-2">Order in for yourself or for the group, with no restrictions on order value</p>
+        </div>
+        <div className="relative">
+          <svg className="w-24 h-1" fill="none" stroke="white" viewBox="0 0 96 4">
+            <path d="M 0 2 Q 24 0 48 2 T 96 2" strokeDasharray="4 4" />
+          </svg>
+        </div>
+        <div className="text-center text-white">
+          <img src={delivery} alt="Fast Delivery" width={100} height={100} className="mx-auto" />
+          <h2 className="text-xl font-bold mt-4">Fast Delivery</h2>
+          <p className="text-sm mt-2">Order in for yourself or for the group, with no restrictions on order value</p>
+        </div>
+        <div className="relative">
+          <svg className="w-24 h-1" fill="none" stroke="white" viewBox="0 0 96 4">
+            <path d="M 0 2 Q 24 4 48 2 T 96 2 " strokeDasharray="4 4" />
+          </svg>
+        </div>
+        <div className="text-center text-white">
+          <img src={enjoy} alt="Enjoy Fresh Food" width={100} height={100} className="mx-auto"/>
+          <h2 className="text-xl font-bold mt-4">Enjoy Fresh Food</h2>
+          <p className="text-sm mt-2">Order in for yourself or for the group, with no restrictions on order value</p>
+        </div>
       </div>
     </div>
 
-    {/* Image Section */}
-    <div className="relative right-5 hidden md:block">
-      <img
-        src="https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto/portal/testing/seo-home/Sushi_replace.png"
-        alt="Food"
-        className="w-[260px]"
-      />
-    </div> 
-  </div>
-</section>
 
+
+
+
+
+
+
+
+
+    
+</>
   );
-}
+};
+
+export default HeroSection;

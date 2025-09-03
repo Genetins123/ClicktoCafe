@@ -1,31 +1,20 @@
-const express = require('express');
-const router = express.Router();
-const multer = require('multer');
+const express = require("express");
 const {
-  addFood,
-  getAllFoods,
+  getFoods,
   getFoodById,
+  addFood,
   updateFood,
   deleteFood,
-  getFoodImage
-} = require('../controllers/foodController');
+  getFoodsByRestaurant, // 🔥 new controller
+} = require("../controllers/foodController");
 
-// Multer config (for image uploads)
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const router = express.Router();
 
-// Create
-router.post('/add', upload.single('image'), addFood);
-
-// Read
-router.get('/', getAllFoods);         // Get all foods
-router.get('/:id', getFoodById);      // Get single food by ID
-router.get('/:id/image', getFoodImage); // Get food image
-
-// Update
-router.put('/:id', upload.single('image'), updateFood);
-
-// Delete
-router.delete('/:id', deleteFood);
+router.get("/", getFoods);                         // GET all foods
+router.get("/:id", getFoodById);                   // GET food by id
+router.get("/restaurant/:store", getFoodsByRestaurant); // ✅ GET foods by restaurant
+router.post("/", addFood);                         // ADD food
+router.put("/:id", updateFood);                    // UPDATE food
+router.delete("/:id", deleteFood);                 // DELETE food
 
 module.exports = router;

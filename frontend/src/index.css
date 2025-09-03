@@ -11,7 +11,9 @@
   text-align: center;
 }
 
-
+body{
+  background-color: #1c1919;
+}
 
 /* hide scrollbar */
 .scrollbar-hide::-webkit-scrollbar {

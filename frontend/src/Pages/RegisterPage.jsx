@@ -23,7 +23,7 @@ export default function RegisterPage() {
     setSuccess("");
 
     try {
-      const res = await fetch("http://localhost:5000/api/home/user/sign-up", {
+      const res = await fetch("http://localhost:5000/api/user/sign-up", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

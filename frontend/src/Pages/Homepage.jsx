@@ -3,148 +3,105 @@ import HeroSection from "../component/HeroSection";
 import Header from "../component/Header";
 import Footer from "../component/Footer";
 import { FaAward, FaChartPie, FaUsers, FaSyncAlt } from "react-icons/fa";
+import Slide from "../component/Slide";
+import banner2 from '../assets/banner2.jpg'
+import sec1 from '../assets/sec1.webp'
+import { ArrowRight } from "lucide-react";
+import { Search, MapPin, Star, Clock, Truck, Filter, ChevronDown, Heart, Plus } from 'lucide-react';
+
 
 function Homepage() {
   return (
     <>
       <Header />
       <HeroSection />
-      <FoodMenu />
-      <div className=" p-4">
 
+      <Slide />
+      {/* Hero Banner */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="container max-w-7xl mx-auto text-center bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl text-white p-8 mb-8 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+          <div className="absolute bottom-0 left-8 w-24 h-24 bg-white/5 rounded-full"></div>
+         
+          <div className="relative ">
+            <h1 className="text-3xl md:text-4xl font-bold mb-2">Craving something delicious?</h1>
+            <p className="text-lg opacity-90 mb-4">Get your favorite food delivered in minutes</p>
 
-        <section className="relative isolate overflow-hidden bg-white pt-14 px-2 pb-20 md:py-24 ">
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(45rem_50rem_at_top,var(--color-indigo-100),white)] opacity-20" />
-          <div className="absolute inset-y-0 right-1/2 -z-10 mr-16 w-[200%] origin-bottom-left skew-x-[-30deg] bg-white shadow-xl ring-1 shadow-indigo-600/10 ring-indigo-50 sm:mr-28 lg:mr-0 xl:mr-16 xl:origin-center" />
-          <div className="mx-auto max-w-2xl lg:max-w-4xl">
-            <img
-              alt=""   
-              src="https://tailwindcss.com/plus-assets/img/logos/workcation-logo-indigo-600.svg"
-              className="mx-auto h-12"
-            />
-
-            <figure className="mt-10">
-              <blockquote className="text-center text-xl/8 font-semibold text-gray-900 sm:text-2xl/9">
-                <p>
-                  “Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo expedita voluptas culpa sapiente alias
-                  molestiae. Numquam corrupti in laborum sed rerum et corporis.”
-                </p>
-              </blockquote>
-              <figcaption className="mt-10">
-                <img
-                  alt=""
-                  src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  className="mx-auto size-10 rounded-full"
-                />
-                <div className="mt-4 flex items-center justify-center space-x-3 text-base">
-                  <div className="font-semibold text-gray-900">Judith Black</div>
-                  <svg width={3} height={3} viewBox="0 0 2 2" aria-hidden="true" className="fill-gray-900">
-                    <circle r={1} cx={1} cy={1} />
-                  </svg>
-                  <div className="text-gray-600">CEO of Workcation</div>
-                </div>
-              </figcaption>
-            </figure>
           </div>
-        </section>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+          <div className="absolute bottom-0 right-8 w-24 h-24 bg-white/5 rounded-full"></div>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+          <div className="absolute bottom-0 right-8 w-24 h-24 bg-white/5 rounded-full"></div>
+        </div>
+      </main>
 
-  <div className="w-full flex justify-center px-4">
-  <div
-    className="w-full max-w-6xl bg-gradient-to-r from-[#ff5a3c] via-[#ff7a2f] to-[#ff9e1c] rounded-2xl shadow-xl p-6 md:p-10  
-    grid grid-cols-2 lg:grid-cols-4 md:divide-y lg:divide-y-0 lg:divide-x divide-white/20 text-white"
-  >
-    {/* Box 1 */}
-    <div className="flex flex-col items-center text-center gap-3 p-4">
-      <FaAward className="text-4xl" />
-      <div>
-        <h3 className="text-lg font-bold">Power Elite</h3>
-        <p className="text-sm">Author On Codecanyon</p>
-      </div>
-    </div>
+      <section className=" text-white mb-20 mt-10 px-8">
+        <div className="max-w-7xl container mx-auto grid md:grid-cols-2 gap-10 items-center">
 
-    {/* Box 2 */}
-    <div className="flex flex-col items-center text-center gap-3 p-4">
-      <FaChartPie className="text-4xl" />
-      <div>
-        <h3 className="text-lg font-bold">2.7k+</h3>
-        <p className="text-sm">Product Sold</p>
-      </div>
-    </div>
+          {/* Left Side - Image */}
+          <div className="flex justify-center">
+            <img
+              src={sec1} // 🔹 replace with your delivery image
+              alt="Delivery"
+              className="w-[300px] md:w-[400px] object-contain"
+            />
+          </div>
 
-    {/* Box 3 */}
-    <div className="flex flex-col items-center text-center gap-3 p-4">
-      <FaUsers className="text-4xl" />
-      <div>
-        <h3 className="text-lg font-bold">4.9+</h3>
-        <p className="text-sm">Ratings & Reviews</p>
-      </div>
-    </div>
-
-    {/* Box 4 */}
-    <div className="flex flex-col items-center text-center gap-3 p-4">
-      <FaSyncAlt className="text-4xl" />
-      <div>
-        <h3 className="text-lg font-bold">Free Update</h3>
-        <p className="text-sm">Forever & Always</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-        <div className="bg-gray-900 mt-20 py-24 sm:py-32">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <h2 className="text-center text-lg/8 font-semibold text-white">Trusted by the world’s most innovative teams</h2>
-            <div className="mx-auto mt-10 grid max-w-lg grid-cols-4 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-6 sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-5">
-              <img
-                alt="Transistor"
-                src="https://tailwindcss.com/plus-assets/img/logos/158x48/transistor-logo-white.svg"
-                width={158}
-                height={48}
-                className="col-span-2 max-h-12 w-full object-contain lg:col-span-1"
-              />
-
-              <img
-                alt="Reform"
-                src="https://tailwindcss.com/plus-assets/img/logos/158x48/reform-logo-white.svg"
-                width={158}
-                height={48}
-                className="col-span-2 max-h-12 w-full object-contain lg:col-span-1"
-              />
-
-              <img
-                alt="Tuple"
-                src="https://tailwindcss.com/plus-assets/img/logos/158x48/tuple-logo-white.svg"
-                width={158}
-                height={48}
-                className="col-span-2 max-h-12 w-full object-contain lg:col-span-1"
-              />
-
-              <img
-                alt="SavvyCal"
-                src="https://tailwindcss.com/plus-assets/img/logos/158x48/savvycal-logo-white.svg"
-                width={158}
-                height={48}
-                className="col-span-2 max-h-12 w-full object-contain sm:col-start-2 lg:col-span-1"
-              />
-
-              <img
-                alt="Statamic"
-                src="https://tailwindcss.com/plus-assets/img/logos/158x48/statamic-logo-white.svg"
-                width={158}
-                height={48}
-                className="col-span-2 col-start-2 max-h-12 w-full object-contain sm:col-start-auto lg:col-span-1"
-              />
-            </div>
+          {/* Right Side - Content */}
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Available delivery areas / Zone
+            </h2>
+            <p className="text-gray-400 mb-6">
+              We offer delivery services across a wide range of regions. To see if we deliver
+              to your area, check our list of available delivery zones or use our delivery.
+            </p>
+            <button className="bg-black text-white px-6 py-3 rounded-lg font-semibold border border-gray-600 hover:bg-gray-800 transition">
+              All Over The World
+            </button>
           </div>
         </div>
+      </section>
 
+      <section className="bg-gradient-to-r from-brown-600 to-brown-800 py-10 px-4 text-white relative ">
+        {/* Background Image - Replace with your image path */}
+        <div
+          className="absolute inset-0 bg-cover bg-center  opacity-40 "
+          style={{ backgroundImage: `url(${banner2})` }}
+        ></div>
+        <div className="container mx-auto max-w-6xl flex flex-col md:flex-row justify-between items-center relative z-10">
+          {/* Left Text */}
+          <div className="mb-4 md:mb-0 text-center md:text-left">
+            <h2 className="text-3xl font-bold mb-2">Lets Connect !</h2>
+            <p className="text-md">Stay up to date with restaurants around you.</p>
+            <p className="text-sm text-gray-300">Subscribe with email.</p>
+          </div>
 
-      </div>
+          {/* Email Input */}
+          <div className="flex items-center bg-[#1e1e1e] rounded-xl p-1 w-[400px]">
+            {/* Input */}
+            <input
+              type="email"
+              placeholder="Your Email Address"
+              className="flex-1 bg-transparent text-gray-300 placeholder-gray-400 outline-none px-3 py-2"
+            />
+
+            {/* Button */}
+            <button className="bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg p-3 flex items-center justify-center shadow-md hover:opacity-90 transition">
+              <ArrowRight className="text-black w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </section>
       <Footer />
     </>
   )
 }
 
 export default Homepage
+
+
+
+
+
+

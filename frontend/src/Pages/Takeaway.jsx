@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, MapPin, Star, Clock, Truck, Filter, ChevronDown, Heart, Plus } from 'lucide-react';
 import Header from '../component/Header';
+import { Link } from "react-router-dom";
 
 // Categories (pure JS objects)
 const categories = [
@@ -30,15 +31,6 @@ function Takeaway() {
       .catch(err => console.error("Error fetching restaurants:", err));
   }, []);
 
-  const toggleFavorite = (restaurantId) => {
-    const newFavorites = new Set(favoriteRestaurants);
-    if (newFavorites.has(restaurantId)) {
-      newFavorites.delete(restaurantId);
-    } else {
-      newFavorites.add(restaurantId);
-    }
-    setFavoriteRestaurants(newFavorites);
-  };
 
   const filteredRestaurants = restaurants.filter(restaurant => {
     const matchesSearch =
@@ -60,7 +52,7 @@ function Takeaway() {
 
         {/* Hero Banner */}
         <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl text-white p-8 mb-8 relative overflow-hidden">
-          <div className="relative z-10">
+          <div className="relative ">
             <h1 className="text-3xl md:text-4xl font-bold mb-2">Craving something delicious?</h1>
             <p className="text-lg opacity-90 mb-4">Get your favorite food delivered in minutes</p>
             <div className="flex items-center space-x-2 text-sm">
@@ -80,7 +72,7 @@ function Takeaway() {
         <section className="mb-8">
           <div className='flex flex-row items-center justify-between'>
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              What's on your mind?
+              Restaurants near you
             </h2>
 
             <div className="flex items-center space-x-2">
@@ -97,60 +89,29 @@ function Takeaway() {
             </div>
           </div>
 
-          <div className="grid grid-cols-4 md:grid-cols-8 gap-4">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setSelectedCategory(selectedCategory === category.id ? null : category.id)}
-                className={`group flex flex-col items-center space-y-2 p-3 rounded-xl transition-all duration-200 ${selectedCategory === category.id
-                  ? 'bg-orange-50 ring-2 ring-orange-500'
-                  : 'hover:bg-gray-100'
-                  }`}
-              >
-                <div className="w-16 h-16 rounded-full overflow-hidden group-hover:scale-110 transition-transform duration-200">
-                  <img src={category.image} alt={category.name} className="w-full h-full object-cover" />
-                </div>
-                <span className="text-sm font-medium text-gray-700 text-center">{category.name}</span>
-              </button>
-            ))}
-          </div>
+          
         </section>
- {/* Filters */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">
-            {selectedCategory ? `${categories.find(c => c.id === selectedCategory)?.name} Restaurants` : 'Restaurants near you'}
-          </h2>
-          <button className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-            <Filter className="w-4 h-4" />
-            <span>Filters</span>
-          </button>
-        </div>
+        
         {/* Restaurant Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {filteredRestaurants.map((restaurant) => (
             <div key={restaurant._id} className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden group">
               <div className="relative">
-                <img
-                  src={restaurant.image_url}
-                  alt={restaurant.name}
-                  className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
+                
+                <Link to={`/restaurant/${restaurant._id}`}>
+  <img
+    src={restaurant.image_url}
+    alt={restaurant.name}
+    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+  />
+</Link>
+
                 {restaurant.offer && (
                   <div className="absolute bottom-3 left-3 bg-white text-orange-600 text-sm px-3 py-1 rounded-full font-bold shadow-md">
                     {restaurant.offer}
                   </div>
                 )}
-                <button
-                  onClick={() => toggleFavorite(restaurant._id)}
-                  className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors"
-                >
-                  <Heart
-                    className={`w-4 h-4 ${favoriteRestaurants.has(restaurant._id)
-                        ? 'fill-red-500 text-red-500'
-                        : 'text-gray-400'
-                      }`}
-                  />
-                </button>
+                
               </div>
 
               <div className="p-4">

@@ -1,145 +1,154 @@
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-function AddFood() {
+export default function AdminAddFood() {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
     category: "",
-    store: "",
-    image: null,
+    image_url: "",
+    restaurant: "",
+    description: "",
+    rating: "",
+    offer: "",
   });
 
-  const [imagePreview, setImagePreview] = useState(null);
-  const [successMsg, setSuccessMsg] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [restaurants, setRestaurants] = useState([]);
 
-  const fileInputRef = useRef(null); // for resetting file input
+  // 🔹 Fetch restaurants for dropdown
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/restaurants");
+        setRestaurants(res.data);
+      } catch (error) {
+        console.error("Failed to fetch restaurants", error);
+      }
+    };
+    fetchRestaurants();
+  }, []);
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "image" && files[0]) {
-      setFormData({ ...formData, image: files[0] });
-      setImagePreview(URL.createObjectURL(files[0])); // preview image
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    const data = new FormData();
-    data.append("name", formData.name);
-    data.append("price", formData.price);
-    data.append("category", formData.category);
-    data.append("store", formData.store);
-    data.append("image", formData.image);
-
     try {
-      const response = await fetch("http://localhost:5000/api/food/add", {
-        method: "POST",
-        body: data,
-      });
-
-      if (!response.ok) throw new Error("Failed to add food");
-
-      setSuccessMsg("🎉 Food item added successfully!");
-      setErrorMsg("");
+      await axios.post("http://localhost:5000/api/foods", formData);
+      alert("✅ Food added successfully!");
       setFormData({
         name: "",
         price: "",
         category: "",
-        store: "",
-        image: null,
+        image_url: "",
+        restaurant: "",
+        description: "",
+        rating: "",
+        offer: "",
       });
-      setImagePreview(null);
-      fileInputRef.current.value = null; // reset file input
-    } catch (err) {
-      console.error(err);
-      setErrorMsg("❌ Error adding food item. Please try again.");
-      setSuccessMsg("");
-    } finally {
-      setIsSubmitting(false);
+    } catch (error) {
+      console.error(error);
+      alert("❌ Failed to add food");
     }
   };
 
   return (
-    <div className="max-w-xl mx-auto bg-white p-6 rounded shadow">
-      <h2 className="text-2xl font-semibold mb-4">Add New Food</h2>
-
-      {successMsg && <p className="text-green-600 mb-2">{successMsg}</p>}
-      {errorMsg && <p className="text-red-600 mb-2">{errorMsg}</p>}
-
-      <form className="space-y-4" onSubmit={handleSubmit}>
+    <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg">
+      <h2 className="text-2xl font-bold mb-4">Add Food</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
           name="name"
+          placeholder="Food Name"
           value={formData.name}
           onChange={handleChange}
-          placeholder="Food Name"
-          className="w-full border p-2 rounded"
+          className="w-full p-2 border rounded"
           required
         />
         <input
           type="number"
           name="price"
+          placeholder="Price"
           value={formData.price}
           onChange={handleChange}
-          placeholder="Price"
-          className="w-full border p-2 rounded"
+          className="w-full p-2 border rounded"
           required
         />
-        <input
-          type="file"
-          name="image"
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          ref={fileInputRef}
-          accept="image/*"
-          required
-        />
-
-        {/* 🖼 Image Preview */}
-        {imagePreview && (
-          <img
-            src={imagePreview}
-            alt="Preview"
-            className="h-32 object-cover rounded border"
-          />
-        )}
-
         <input
           type="text"
           name="category"
+          placeholder="Category"
           value={formData.category}
           onChange={handleChange}
-          placeholder="Category"
-          className="w-full border p-2 rounded"
+          className="w-full p-2 border rounded"
           required
         />
         <input
           type="text"
-          name="store"
-          value={formData.store}
+          name="image_url"
+          placeholder="Image URL"
+          value={formData.image_url}
           onChange={handleChange}
-          placeholder="Store"
-          className="w-full border p-2 rounded"
-          required
+          className="w-full p-2 border rounded"
         />
+
+        {/* 🔹 New Fields */}
+        <textarea
+          name="description"
+          placeholder="Description"
+          value={formData.description}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+          rows="3"
+        />
+
+        <input
+          type="number"
+          name="rating"
+          placeholder="Rating (1-5)"
+          value={formData.rating}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+          min="1"
+          max="5"
+        />
+
+        <input
+          type="text"
+          name="offer"
+          placeholder="Offer (e.g. 20% OFF)"
+          value={formData.offer}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+        />
+
+        {/* 🔹 Restaurant Dropdown */}
+        <select
+          name="restaurant"
+          value={formData.restaurant}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+          required
+        >
+          <option value="">-- Select Restaurant --</option>
+          {restaurants.map((rest) => (
+            <option key={rest._id} value={rest._id}>
+              {rest.name}
+            </option>
+          ))}
+        </select>
+
         <button
           type="submit"
-          disabled={isSubmitting}
-          className={`bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ${
-            isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-          }`}
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
         >
-          {isSubmitting ? "Adding..." : "Add Food"}
+          Add Food
         </button>
       </form>
     </div>
   );
 }
-
-export default AddFood;

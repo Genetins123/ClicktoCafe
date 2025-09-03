@@ -1,22 +1,22 @@
 const express = require("express");
 const {
   getRestaurants,
-  getFoodsByRestaurant,
   createRestaurant,
-   deleteRestaurant,
-  updateRestaurant
-
+  deleteRestaurant,
+  updateRestaurant,
 } = require("../controllers/restaurantController");
+
+const { getFoodsByRestaurant } = require("../controllers/foodController"); // 👈 Correct place
 
 const router = express.Router();
 
+// Restaurants
 router.get("/", getRestaurants);
-router.get("/:id/foods", getFoodsByRestaurant);
 router.post("/", createRestaurant);
-// Delete restaurant
-router.delete("/:id", deleteRestaurant);
-// Update restaurant
 router.put("/:id", updateRestaurant);
+router.delete("/:id", deleteRestaurant);
 
+// Foods by restaurant
+router.get("/:id/foods", getFoodsByRestaurant);
 
 module.exports = router;

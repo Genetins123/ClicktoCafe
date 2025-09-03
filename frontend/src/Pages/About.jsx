@@ -1,114 +1,61 @@
+import React from "react";
+import Header from '../component/Header'
+import Footer from "../component/Footer";
 
-import Footer from "../component/Footer"
-import Header from "../component/Header"
-
-
-const posts = [
-  {
-    id: 1,
-    title: 'Boost your conversion rate',
-    href: '#',
-    description:
-      'Illo sint voluptas. Error voluptates culpa eligendi. Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. Sed exercitationem placeat consectetur nulla deserunt vel. Iusto corrupti dicta.',
-    date: 'Mar 16, 2020',
-    datetime: '2020-03-16',
-    category: { title: 'Marketing', href: '#' },
-    author: {
-      name: 'Michael Foster',
-      role: 'Co-Founder / CTO',
-      href: '#',
-      imageUrl:
-        'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-  },
-  {
-    id: 2,
-    title: 'How to use search engine optimization to drive sales',
-    href: '#',
-    description: 'Optio cum necessitatibus dolor voluptatum provident commodi et. Qui aperiam fugiat nemo cumque.',
-    date: 'Mar 10, 2020',
-    datetime: '2020-03-10',
-    category: { title: 'Sales', href: '#' },
-    author: {
-      name: 'Lindsay Walton',
-      role: 'Front-end Developer',
-      href: '#',
-      imageUrl:
-        'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-  },
-  {
-    id: 3,
-    title: 'Improve your customer experience',
-    href: '#',
-    description:
-      'Cupiditate maiores ullam eveniet adipisci in doloribus nulla minus. Voluptas iusto libero adipisci rem et corporis. Nostrud sint anim sunt aliqua. Nulla eu labore irure incididunt velit cillum quis magna dolore.',
-    date: 'Feb 12, 2020',
-    datetime: '2020-02-12',
-    category: { title: 'Business', href: '#' },
-    author: {
-      name: 'Tom Cook',
-      role: 'Director of Product',
-      href: '#',
-      imageUrl:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-  },
-]
-
-export default function Example() {
+export default function About() {
   return (
     <>
-    
-       <Header />
-    <div className="bg-gradient-to-r from-grad1start to-grad1end py-12">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl lg:mx-0">
-          <h2 className="text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">From the blog</h2>
-          <p className="mt-2 text-lg/8 text-gray-600">Learn how to grow your business with our expert advice.</p>
+    <Header />
+    <div className="min-h-screen bg-gradient-to-r from-grad1start to-grad1end flex flex-col items-center py-12 px-6">
+      {/* Heading */}
+      <h1 className="text-4xl font-bold text-gray-800 mb-6 text-center">
+        About Us
+      </h1>
+
+      {/* Intro */}
+      <p className="max-w-2xl text-center text-gray-600 mb-10">
+        Welcome to <span className="font-semibold text-orange-600">ClickToCafe</span>, 
+        your go-to destination for delicious meals delivered right to your doorstep. 
+        We partner with top restaurants to bring you fresh, fast, and tasty food — anytime, anywhere.
+      </p>
+
+      {/* Cards Section */}
+      <div className="grid gap-8 md:grid-cols-3 max-w-5xl w-full">
+        {/* Card 1 */}
+        <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">🍴 Fresh & Tasty</h2>
+          <p className="text-gray-600">
+            We ensure every meal is freshly prepared and delivered hot, just like you’d enjoy in the restaurant.
+          </p>
         </div>
-        <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-          {posts.map((post) => (
-            <article key={post.id} className="flex max-w-xl flex-col items-start justify-between">
-              <div className="flex items-center gap-x-4 text-xs">
-                <time dateTime={post.datetime} className="text-gray-500">
-                  {post.date}
-                </time>
-                <a
-                  href={post.category.href}
-                  className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100"
-                >
-                  {post.category.title}
-                </a>
-              </div>
-              <div className="group relative grow">
-                <h3 className="mt-3 text-lg/6 font-semibold text-gray-900 group-hover:text-gray-600">
-                  <a href={post.href}>
-                    <span className="absolute inset-0" />
-                    {post.title}
-                  </a>
-                </h3>
-                <p className="mt-5 line-clamp-3 text-sm/6 text-gray-600">{post.description}</p>
-              </div>
-              <div className="relative mt-8 flex items-center gap-x-4 justify-self-end">
-                <img alt="" src={post.author.imageUrl} className="size-10 rounded-full bg-gray-50" />
-                <div className="text-sm/6">
-                  <p className="font-semibold text-gray-900">
-                    <a href={post.author.href}>
-                      <span className="absolute inset-0" />
-                      {post.author.name}
-                    </a>
-                  </p>
-                  <p className="text-gray-600">{post.author.role}</p>
-                </div>
-              </div>
-            </article>
-          ))}
+
+        {/* Card 2 */}
+        <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">🚀 Fast Delivery</h2>
+          <p className="text-gray-600">
+            With our smart delivery system, you get your favorite meals at lightning-fast speed.
+          </p>
+        </div>
+
+        {/* Card 3 */}
+        <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">💳 Easy Payments</h2>
+          <p className="text-gray-600">
+            Pay securely with multiple options — credit card, UPI, or cash on delivery.
+          </p>
         </div>
       </div>
-    </div>
 
+      {/* Closing */}
+      <div className="mt-12 max-w-2xl text-center">
+        <h2 className="text-2xl font-bold text-gray-800 mb-3">Our Mission</h2>
+        <p className="text-gray-600">
+          To make food ordering simple, fast, and delightful for everyone. 
+          We believe good food brings people together, and we’re here to make that happen.
+        </p>
+      </div>
+    </div>
     <Footer />
     </>
-  )
+  );
 }

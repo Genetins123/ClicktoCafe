@@ -1,17 +1,19 @@
 import { useState } from "react";
 import bg from '../assets/bg.png'
 import Footer from '../component/Footer';
-import Header from '../component/Header';
+import Header from '../component/Header1';
+import { useFavorites } from "../context/FavoritesContext";
+
 
 export default function LoginPage() {
+ const { loginUser } = useFavorites();  // use context
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await fetch("http://localhost:5000/api/home/user/login", {
+      const response = await fetch("http://localhost:5000/api/user/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -23,15 +25,15 @@ export default function LoginPage() {
         // Save token
         localStorage.setItem("token", data.token);
 
-        // Save user details (API already returns name, email, _id)
-        localStorage.setItem("user", JSON.stringify({
+        // Use context login (this will also save user in localStorage)
+        loginUser({
           name: data.name,
           email: data.email,
-          _id: data._id
-        }));
+          _id: data._id,
+        });
 
         alert("Login successful!");
-        window.location.href = "/"; // redirect home
+        window.location.href = "/";
       } else {
         alert(data.error || data.message);
       }
@@ -43,8 +45,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <Header />
-      <div className="flex items-center justify-center min-h-screen h-screen bg-no-repeat bg-center bg-cover" style={{ backgroundImage: `url(${bg})` }}>
+      <Header />      <div className="flex items-center justify-center min-h-screen h-screen bg-no-repeat bg-center bg-cover" style={{ backgroundImage: `url(${bg})` }}>
         <div className="bg-white shadow-xl p-8 w-full max-w-md">
           <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Welcome Back!</h2>
           <form className="space-y-4" onSubmit={handleLogin}>

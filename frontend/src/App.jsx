@@ -9,6 +9,9 @@ import About from './Pages/About'
 import Admin from './admin/components/Admin';
 import MyAccountPage from './Pages/MyAccountPage';
 import Takeaway from './Pages/Takeaway';
+import RestaurantFoods from './Pages/RestaurantFoods';
+import FavoritesPage from './Pages/FavoritesPage';
+import CartPage from './Pages/CartPage';
 
 function App() {
   return (
@@ -25,6 +28,9 @@ function App() {
         <Route path="/takeaway" element={<Takeaway />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/account" element={<MyAccountPage />} />
+        <Route path="/favorites" element={<FavoritesPage />} />
+        <Route path="/restaurant/:id" element={<RestaurantFoods />} />
+        <Route path='/cart' element={<CartPage />}></Route>
       </Routes>
     </BrowserRouter>
    

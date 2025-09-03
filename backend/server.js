@@ -4,37 +4,41 @@ const cors = require('cors');
 require('dotenv').config();
 
 // Route imports
-const userRoutes = require('./routes/userRoute');   // User signup/login routes
-const foodRoutes = require('./routes/foodRoute');   // Food routes
-const restaurantRoutes = require('./routes/restaurantRoute'); // ✅ Restaurant routes
+const userRoutes = require('./routes/userRoute');
+const foodRoutes = require('./routes/foodRoute');
+const restaurantRoutes = require('./routes/restaurantRoute');
 
 const app = express();
 
 // Middleware
 app.use(cors());
-app.use(express.json());  
+app.use(express.json());
 
-// Log all incoming requests
+// Logger middleware
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
   next();
 });
 
 // Routes
-app.use('/api/home/user', userRoutes);     // signup + login
-app.use('/api/food', foodRoutes);          // foods
-app.use('/api/restaurants', restaurantRoutes); // ✅ restaurants
+app.use('/api/user', userRoutes);          // Example: /api/users/register
+app.use('/api/foods', foodRoutes);          // Example: /api/foods/:id
+app.use('/api/restaurants', restaurantRoutes); // Example: /api/restaurants/:id/foods
 
-// Default route (optional)
+// Health check
 app.get('/', (req, res) => {
   res.send('🚀 API is running...');
-}); 
+});
 
-// Connect to MongoDB and start server
-mongoose.connect(process.env.MONGO_URI)
+// MongoDB connection + server start
+const PORT = process.env.PORT || 5000;
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
   .then(() => {
-    app.listen(process.env.PORT, () => {
-      console.log(`✅ Connected to DB & listening on port ${process.env.PORT}`);
+    app.listen(PORT, () => {
+      console.log(`✅ Connected to MongoDB & listening on port ${PORT}`);
     });
   })
   .catch((error) => {

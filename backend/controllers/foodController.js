@@ -1,113 +1,115 @@
-const Food = require('../models/foodModel');
+const Food = require("../models/foodModel");
+const Restaurant = require("../models/restaurantModel");
 
-// CREATE
+// ✅ Get all foods
+const getFoods = async (req, res) => {
+  try {
+    const foods = await Food.find().populate("restaurant", "name");
+    res.json(foods);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+// ✅ Get food by ID
+const getFoodById = async (req, res) => {
+  try {
+    const food = await Food.findById(req.params.id).populate("restaurant", "name");
+    if (!food) return res.status(404).json({ message: "Food not found" });
+    res.json(food);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+// ✅ Get foods by Restaurant
+const getFoodsByRestaurant = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const restaurant = await Restaurant.findById(id);
+    if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
+
+    const foods = await Food.find({ restaurant: id }).populate("restaurant", "name");
+
+    res.json({
+      restaurant: restaurant.name,
+      totalFoods: foods.length,
+      foods,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+// ✅ Add food
 const addFood = async (req, res) => {
   try {
-    const { name, price, category, store } = req.body;
+    const { name, price, category, description, rating, offer, image_url, restaurant } = req.body;
+
+    const restaurantExists = await Restaurant.findById(restaurant);
+    if (!restaurantExists) return res.status(400).json({ message: "Invalid restaurant ID" });
 
     const newFood = new Food({
       name,
-      price,
+      price: Number(price),
       category,
-      store,
-      image: req.file
-        ? {
-            data: req.file.buffer,
-            contentType: req.file.mimetype,
-          }
-        : undefined,
+      description: description || "",
+      rating: Number(rating) || 0,
+      offer: Number(offer) || 0,
+      image_url: image_url || "",
+      restaurant,
     });
 
     await newFood.save();
-    res.status(201).json({ message: 'Food added successfully', food: newFood });
+
+    res.status(201).json({ message: "Food added successfully!", data: newFood });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to add food' });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
-// READ ALL
-const getAllFoods = async (req, res) => {
-  try {
-    const foods = await Food.find();
-    res.status(200).json(foods);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch foods' });
-  }
-};
-
-// READ ONE
-const getFoodById = async (req, res) => {
-  try {
-    const food = await Food.findById(req.params.id);
-    if (!food) return res.status(404).json({ error: 'Food not found' });
-    res.status(200).json(food);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch food' });
-  }
-};
-
-// GET IMAGE
-const getFoodImage = async (req, res) => {
-  try {
-    const food = await Food.findById(req.params.id);
-    if (!food || !food.image || !food.image.data) {
-      return res.status(404).json({ error: 'Image not found' });
-    }
-    res.set('Content-Type', food.image.contentType);
-    res.send(food.image.data);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch image' });
-  }
-};
-
-// UPDATE
+// ✅ Update food
 const updateFood = async (req, res) => {
   try {
-    const { name, price, category, store } = req.body;
+    const { name, price, category, description, rating, offer, image_url, restaurant } = req.body;
 
     const updateData = {
-      name,
-      price,
-      category,
-      store,
+      ...(name && { name }),
+      ...(price !== undefined && { price: Number(price) }),
+      ...(category && { category }),
+      ...(description && { description }),
+      ...(rating !== undefined && { rating: Number(rating) }),
+      ...(offer !== undefined && { offer: Number(offer) }),
+      ...(image_url && { image_url }),
+      ...(restaurant && { restaurant }),
     };
 
-    if (req.file) {
-      updateData.image = {
-        data: req.file.buffer,
-        contentType: req.file.mimetype,
-      };
-    }
+    const updated = await Food.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    if (!updated) return res.status(404).json({ message: "Food not found" });
 
-    const updatedFood = await Food.findByIdAndUpdate(req.params.id, updateData, {
-      new: true,
-    });
-
-    if (!updatedFood) return res.status(404).json({ error: 'Food not found' });
-
-    res.status(200).json({ message: 'Food updated', food: updatedFood });
+    res.json({ message: "Food updated successfully", data: updated });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to update food' });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
-// DELETE
+// ✅ Delete food
 const deleteFood = async (req, res) => {
   try {
-    const deletedFood = await Food.findByIdAndDelete(req.params.id);
-    if (!deletedFood) return res.status(404).json({ error: 'Food not found' });
-    res.status(200).json({ message: 'Food deleted' });
+    const deleted = await Food.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ message: "Food not found" });
+    res.json({ message: "Food deleted successfully" });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to delete food' });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
 module.exports = {
-  addFood,
-  getAllFoods,
+  getFoods,
   getFoodById,
+  getFoodsByRestaurant,
+  addFood,
   updateFood,
   deleteFood,
-  getFoodImage,
 };

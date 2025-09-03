@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Header from "../component/Header";
+import FavoritesPage from "./FavoritesPage";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("orders");
@@ -28,7 +29,7 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/home/user/${user._id}`, {
+      const res = await fetch(`http://localhost:5000/api/user/${user._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -65,7 +66,7 @@ export default function ProfilePage() {
   return (
     <>
      
-      <div className="min-h-screen bg-[#f97316] bg-gray-50">
+      <div className="min-h-screen bg-[#f97316] ">
         {/* Banner */}
         <Header />
 
@@ -120,8 +121,9 @@ export default function ProfilePage() {
             )}
             {activeTab === "favourites" && (
               <div>
-                <h2 className="text-xl font-bold mb-4">Favourites</h2>
-                <p className="text-gray-500">Your favourite items will be shown here.</p>
+                <FavoritesPage />
+                {/* <h2 className="text-xl font-bold mb-4">Favourites</h2>
+                <p className="text-gray-500">Your favourite items will be shown here.</p> */}
               </div>
             )}
             {activeTab === "payments" && (
