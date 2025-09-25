@@ -8,8 +8,8 @@ function FavoritesPage() {
   return (
     <>
       {/* <Header /> */}
-      <div className="max-w-5xl mx-auto p-6">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">My Favorites ❤️</h2>
+      <div className="max-w-5xl bg-[#fff] mx-auto p-6">
+        <h2 className="text-2xl font-bold mb-6 text-orange-500">My Favorites ❤️</h2>
 
         {favorites.length === 0 ? (
           <p className="text-center text-gray-500 mt-10">
@@ -23,7 +23,7 @@ function FavoritesPage() {
                 className="flex justify-between items-start border-b pb-4"
               >
                 <div className="flex-1 pr-4">
-                  <h3 className="text-lg font-semibold text-gray-800">
+                  <h3 className="text-lg font-semibold text-black">
                     {food.name}
                   </h3>
                   <p className="text-gray-500 text-sm mt-1">₹{food.price}</p>

@@ -1,179 +1,197 @@
-import { Link, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
-import CartDropdown from "./CartDropdown";
+import { useState, useEffect, useRef } from "react";
+import { ChevronDown, Search, Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
-import {
-  PopoverGroup,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-} from "@headlessui/react";
-import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+const Header1 = () => {
+  const [openMenu, setOpenMenu] = useState(null);
+  const [restaurantList, setRestaurantList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const headerRef = useRef(null); // for click outside
 
-export default function Header() {
-  const [user, setUser] = useState(null);
-  const [cartItems, setCartItems] = useState([]);
-  const location = useLocation();
-
-  const loadCart = () => {
-    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    if (Array.isArray(savedCart)) {
-      setCartItems(savedCart);
-    } else {
-      setCartItems([]);
-    }
+  const menuItems = {
+    categories: [
+      { name: "American", count: 3 },
+      { name: "Caribbean", count: 4 },
+      { name: "Fast Food", count: 6 },
+      { name: "Indian", count: 5 },
+      { name: "Chinese", count: 3 },
+      { name: "Italian", count: 5 },
+    ],
+    cuisines: [
+      { name: "Bengali" },
+      { name: "Japanese" },
+      { name: "Indian" },
+      { name: "Spanish" },
+      { name: "Chinese" },
+      { name: "Italian" },
+      { name: "Fast Food" },
+      { name: "Sea Food" },
+    ],
   };
 
+  // Fetch restaurants
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (err) {
-        console.error("Error parsing user:", err);
-      }
-    }
-
-    loadCart();
-
-    // 🔹 Listen for cart updates from other components
-    const handleCartUpdate = () => loadCart();
-    window.addEventListener("cartUpdated", handleCartUpdate);
-
-    return () => window.removeEventListener("cartUpdated", handleCartUpdate);
+    setIsLoading(true);
+    fetch("http://localhost:5000/api/restaurants")
+      .then((res) => res.json())
+      .then((data) => {
+        setRestaurantList(data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Failed to load restaurants:", error);
+        setIsLoading(false);
+      });
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    setUser(null);
-    window.location.href = "/loginpage";
-  };
-
-  const removeFromCart = (id) => {
-    const updatedCart = cartItems.filter((item) => item._id !== id);
-    setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    window.dispatchEvent(new Event("cartUpdated")); // 🔹 notify others
-  };
-
-  const totalPrice = Array.isArray(cartItems)
-    ? cartItems.reduce(
-      (acc, item) => acc + (item.price || 0) * (item.quantity || 1),
-      0
-    )
-    : 0;
-
-  const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "About", path: "/about" },
-    { name: "Takeaway", path: "/takeaway" },
-    { name: "Contact", path: "/contact" },
-  ];
+  // Click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (headerRef.current && !headerRef.current.contains(e.target)) {
+        setOpenMenu(null);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
   return (
-    <header className="bg-white shadow-sm">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
-        {/* Logo */}
-        <div className="flex lg:flex-1">
-          <a
-            href="/"
-            className="-m-1.5 flex text-xl flex-row font-bold items-center gap-2 text-orange-500 p-1.5"
-          >
-            <img
-              alt=""
-              src="https://png.pngtree.com/png-clipart/20210309/original/pngtree-coffee-logo-png-image_5898135.jpg"
-              className="h-8 w-auto"
-            />
-            ClicktoCafe
+    <header
+      ref={headerRef}
+      className="bg-[#292525] text-white p-3 fixed top-[48px] border-t border-t-black left-0 w-full z-40 shadow-md"
+    >
+      <div className="container mx-auto max-w-6xl flex items-center justify-between">
+        {/* Left Side Nav */}
+        <nav className="flex gap-6 items-center">
+          <a href="/home" className="hover:text-orange-400">
+            Home
           </a>
-        </div>
 
-        {/* Desktop Nav Links */}
-        <PopoverGroup className="hidden lg:flex lg:gap-x-12">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.path}
-              className={`font-bold ${location.pathname === link.path
-                  ? "text-black"
-                  : "text-gray-500 hover:text-black"
-                }`}
-            >
-              {link.name}
-            </Link>
-          ))}
-        </PopoverGroup>
+          {/* Categories & Cuisines */}
+          {["categories", "cuisines"].map((menu) => (
+            <div key={menu} className="relative dropdown">
+              <button
+                className="flex items-center gap-1 hover:text-orange-400"
+                onClick={() =>
+                  setOpenMenu(openMenu === menu ? null : menu)
+                }
+              >
+                {menu.charAt(0).toUpperCase() + menu.slice(1)}{" "}
+                <ChevronDown size={16} />
+              </button>
 
-        {/* Right side */}
-        <div className="hidden lg:flex z-10 lg:flex-1 lg:justify-end gap-6 items-center">
-          {/* Cart */}
-          <Menu as="div" className="relative">
-            <MenuButton className="relative flex items-center px-3 py-2 rounded-full hover:bg-gray-100">
-              <ShoppingCartIcon className="h-6 w-6 text-orange-600" />
-              {cartItems.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                  {cartItems.length}
-                </span>
-              )}
-            </MenuButton>
-            <Menu.Items className="absolute right-0 mt-2 w-80  origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-              <CartDropdown cartItems={cartItems} />
-            </Menu.Items>
-
-
-
-
-          </Menu>
-
-          {/* User */}
-          {user ? (
-            <Menu as="div" className="relative">
-              <MenuButton className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-orange-200 text-orange-600 font-semibold">
-                Hi, {user.name} 👋
-              </MenuButton>
-              <MenuItems className="absolute right-0 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-                <div className="py-1">
-                  <MenuItem>
-                    {({ active }) => (
-                      <Link
-                        to="/account"
-                        className={`block px-4 py-2 text-sm ${active ? "bg-gray-100" : ""
-                          }`}
+              {openMenu === menu && (
+                <div className="absolute top-full left-0 mt-2 w-[420px] bg-[#292525] border-[1px] border-gray-600 rounded-xl shadow-lg p-4 z-50 transition-all duration-200 ease-in-out">
+                  <div className="grid grid-cols-2 gap-3">
+                    {menuItems[menu].map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded-lg cursor-pointer"
                       >
-                        Profile
-                      </Link>
-                    )}
-                  </MenuItem>
-                  <MenuItem>
-                    {({ active }) => (
-                      <button
-                        onClick={handleLogout}
-                        className={`w-full text-left px-4 py-2 text-sm ${active ? "bg-gray-100" : ""
-                          }`}
-                      >
-                        Logout
-                      </button>
-                    )}
-                  </MenuItem>
+                        <img
+                          src="https://png.pngtree.com/png-vector/20220705/ourmid/pngtree-food-logo-png-image_5687686.png"
+                          className="w-10 h-10 rounded-full object-cover"
+                          alt=""
+                        />
+                        <span>
+                          {item.name}{" "}
+                          {item.count && (
+                            <span className="text-gray-400">
+                              ({item.count})
+                            </span>
+                          )}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  <button className="mt-2 bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600">
+                    View all
+                  </button>
                 </div>
-              </MenuItems>
-            </Menu>
-          ) : (
-            <Link
-              to="/LoginPage"
-              className="bg-gradient-to-r from-orange-500 to-yellow-400 
-              text-white font-semibold px-6 py-2 
-              rounded-full shadow-lg 
-              hover:from-orange-600 hover:to-yellow-500
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+              )}
+            </div>
+          ))}
+
+          {/* Restaurants Dropdown */}
+          <div className="relative dropdown">
+            <button
+              className="flex items-center gap-1 hover:text-orange-400"
+              onClick={() =>
+                setOpenMenu(openMenu === "restaurants" ? null : "restaurants")
+              }
             >
-              Log in →
-            </Link>
-          )}
+              Restaurants <ChevronDown size={16} />
+            </button>
+
+            {openMenu === "restaurants" && (
+              <div className="absolute top-full left-0 w-[720px] bg-[#292525] rounded-xl border border-gray-600 shadow-lg p-6 grid grid-cols-3 gap-6 z-50 transition-all duration-200 ease-in-out">
+                {/* Restaurants List */}
+                <div className="col-span-2 grid grid-cols-2 gap-4 max-h-80 overflow-auto">
+                  {isLoading ? (
+                    <div className="col-span-2 flex justify-center items-center p-4">
+                      <Loader2 className="animate-spin mr-2" /> Loading...
+                    </div>
+                  ) : restaurantList.length > 0 ? (
+                    restaurantList.map((item, idx) => (
+                      <Link
+                        key={idx}
+                        to={`/restaurant/${item._id}`}
+                        className="flex gap-3 p-3 rounded-lg hover:bg-gray-700 items-center    cursor-pointer transition"
+                      >
+                        <div className="w-10 h-10 bg-white rounded-md flex items-center justify-center overflow-hidden">
+                          {item.image_url ? (
+                            <img
+                              src={item.image_url}
+                              alt={item.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-lg">🍽</span>
+                          )}
+                        </div>
+                        <p className="text-white font-medium">{item.name}</p>
+                      </Link>
+                    ))
+                  ) : (
+                    <p className="text-gray-400 col-span-2">No restaurants found</p>
+                  )}
+                </div>
+
+                {/* Promo Section */}
+                <div className="flex flex-col items-center justify-center rounded-lg">
+                  <img
+                    src="https://stackfood-react.6amtech.com/_next/static/media/resturant.88ad40dd.png"
+                    alt="Promotional"
+                    className="w-full h-auto rounded-lg mb-4"
+                  />
+                  <Link to="/restaurant">
+                    <button className="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition">
+                      View all
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+        </nav>
+
+        {/* Right Side - Search */}
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <Search
+              className="absolute text-sm left-3 top-2.5 text-gray-400"
+              size={18}
+            />
+            <input
+              type="text"
+              placeholder="Search foods and restaurants..."
+              className="bg-[#0f172a] text-sm text-white pl-10 pr-4 py-2 rounded-lg w-72 focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+          </div>
         </div>
-      </nav>
+      </div>
     </header>
   );
-}
+};
+
+export default Header1;

@@ -1,48 +1,40 @@
 // src/context/CartContext.js
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 
 const CartContext = createContext();
+export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
-  // Load from localStorage
-  useEffect(() => {
-    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    setCartItems(savedCart);
-  }, []);
-
-  // Save to localStorage
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  const addToCart = (food) => {
+  const addToCart = (food, qty = 1) => {
     setCartItems((prev) => {
-      const existing = prev.find((item) => item._id === food._id);
+      const existing = prev.find((item) => item.id === food.id);
       if (existing) {
-        // quantity increase
         return prev.map((item) =>
-          item._id === food._id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
+          item.id === food.id ? { ...item, qty: item.qty + qty } : item
         );
       }
-      return [...prev, { ...food, quantity: 1 }];
+      return [...prev, { ...food, qty }];
     });
   };
 
   const removeFromCart = (id) => {
-    setCartItems((prev) => prev.filter((item) => item._id !== id));
+    setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const clearCart = () => setCartItems([]);
+  const totalItems = cartItems.reduce((sum, item) => sum + item.qty, 0);
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.price * item.qty,
+    0
+  );
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, clearCart }}>
+    <CartContext.Provider
+      value={{ cartItems, addToCart, removeFromCart, totalItems, totalPrice }}
+    >
       {children}
     </CartContext.Provider>
   );
 };
-
-export const useCart = () => useContext(CartContext);
+  

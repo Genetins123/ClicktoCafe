@@ -30,11 +30,20 @@ const getFoodsByRestaurant = async (req, res) => {
     const restaurant = await Restaurant.findById(id);
     if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
 
-    const foods = await Food.find({ restaurant: id }).populate("restaurant", "name");
+    const foods = await Food.find({ restaurant: id }).populate("restaurant");
 
     res.json({
-      restaurant: restaurant.name,
-      totalFoods: foods.length,
+      restaurant: {
+        _id: restaurant._id,
+        name: restaurant.name,
+        image_url: restaurant.image_url,
+        cuisine: restaurant.cuisine,
+        rating: restaurant.rating,
+        delivery_time: restaurant.delivery_time,
+        offer: restaurant.offer,
+        delivery_type: restaurant.delivery_type,
+      },
+       totalFoods: foods.length,
       foods,
     });
   } catch (err) {

@@ -1,4 +1,3 @@
-// FavoritesContext.jsx
 import { createContext, useContext, useState, useEffect } from "react";
 
 const FavoritesContext = createContext();
@@ -10,17 +9,34 @@ export function FavoritesProvider({ children }) {
   // Load userId from localStorage if logged in
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      const parsed = JSON.parse(storedUser);
-      setUserId(parsed._id);
+
+    if (storedUser && storedUser !== "undefined" && storedUser.trim() !== "") {
+      try {
+        const parsed = JSON.parse(storedUser);
+        if (parsed && parsed._id) {
+          setUserId(parsed._id);
+        } else {
+          setUserId(null);
+        }
+      } catch (err) {
+        console.error("Error parsing user in FavoritesContext:", err);
+        setUserId(null);
+      }
+    } else {
+      setUserId(null);
     }
   }, []);
 
   // Load favorites when userId changes
   useEffect(() => {
     if (userId) {
-      const stored = localStorage.getItem(`favorites_${userId}`);
-      setFavorites(stored ? JSON.parse(stored) : []);
+      try {
+        const stored = localStorage.getItem(`favorites_${userId}`);
+        setFavorites(stored && stored !== "undefined" ? JSON.parse(stored) : []);
+      } catch (err) {
+        console.error("Error parsing favorites:", err);
+        setFavorites([]);
+      }
     } else {
       setFavorites([]); // clear if no user
     }
@@ -29,7 +45,11 @@ export function FavoritesProvider({ children }) {
   // Save favorites to user-specific key
   useEffect(() => {
     if (userId) {
-      localStorage.setItem(`favorites_${userId}`, JSON.stringify(favorites));
+      try {
+        localStorage.setItem(`favorites_${userId}`, JSON.stringify(favorites));
+      } catch (err) {
+        console.error("Error saving favorites:", err);
+      }
     }
   }, [favorites, userId]);
 
@@ -46,8 +66,10 @@ export function FavoritesProvider({ children }) {
 
   // Called after login
   const loginUser = (user) => {
-    setUserId(user._id);
-    localStorage.setItem("user", JSON.stringify(user));
+    if (user && user._id) {
+      setUserId(user._id);
+      localStorage.setItem("user", JSON.stringify(user));
+    }
   };
 
   // Called on logout

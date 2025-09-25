@@ -4,20 +4,26 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  
   theme: {
-    extend: {
-       colors: {
-        grad1start: '#FEEAF0',
-        grad1end: '#F09410',
-        grad2start: '#F0D0C7',
-        grad2end: '#BC430D',
-        grad3start: '#191817ff',
-        grad3end: '#BC430D',
-        grad4start: '#BC430D',
-        grad4end: '#251704ff',
-        headtext:'#f97316'
-      },
+    // tailwind.config.js
+extend: {
+  keyframes: {
+    slideInRight: {
+      "0%": { transform: "translateX(100%)" },
+      "100%": { transform: "translateX(0)" },
     },
+    slideOutRight: {
+      "0%": { transform: "translateX(0)" },
+      "100%": { transform: "translateX(100%)" },
+    },
+  },
+  animation: {
+    slideInRight: "slideInRight 0.3s ease-out forwards",
+    slideOutRight: "slideOutRight 0.3s ease-in forwards",
+  },
+}
+
   },
   plugins: [],
 }

@@ -10,7 +10,7 @@ export default function CartDropdown({ cartItems }) {
   }
 
   return (
-    <div className="p-4 space-y-4 max-h-96 overflow-y-auto">
+    <div className="p-4 space-y-4 z-60 max-h-96 overflow-y-auto">
       {/* Cart Items */}
       <div className="space-y-2">
         {cartItems.map((item) => (
@@ -30,7 +30,7 @@ export default function CartDropdown({ cartItems }) {
 
       {/* Checkout Button */}
       <Link
-        to="/cart"
+        to="/checkout"
         className="block text-center bg-orange-500 text-white py-3 rounded-md font-semibold hover:bg-orange-600"
       >
         CHECKOUT

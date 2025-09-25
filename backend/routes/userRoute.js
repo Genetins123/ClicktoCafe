@@ -1,80 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const userController = require('../controllers/userController');
 
-// controllers
-const { signupUser, loginUser } = require('../controllers/userController');
-const userModel = require('../models/userModel');
+// Routes
+router.post('/register', userController.registerUser);
+router.post("/login", userController.loginUser); // ✅ Login route
 
-// login route
-router.post('/login', loginUser);
-
-// signup route
-router.post('/sign-up', signupUser);
-
-// ✅ GET all users
-router.get('/', async (req, res) => {
-  try {
-    const users = await userModel.find({}, { password: 0 }); // password exclude
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch users' });
-  }
-});
-
-// ✅ GET single user by id
-router.get('/:id', async (req, res) => {
-  try {
-    const user = await userModel.findById(req.params.id, { password: 0 });
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch user' });
-  }
-});
-// ✅ DELETE user by ID
-router.delete('/:id', async (req, res) => {
-  try {
-    const deletedUser = await userModel.findByIdAndDelete(req.params.id);
-    if (!deletedUser) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    res.status(200).json({ message: '✅ User deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to delete user' });
-  }
-});
-// ✅ DELETE all users
-router.delete('/', async (req, res) => {
-  try {
-    await userModel.deleteMany({});
-    res.status(200).json({ message: '✅ All users deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to delete all users' });
-  }
-});
-
-// ✅ UPDATE user by ID
-router.put('/:id', async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-
-    // DB la update
-    const updatedUser = await userModel.findByIdAndUpdate(
-      req.params.id,
-      { name, email, password },
-      { new: true, runValidators: true, select: "-password" } // password exclude
-    );
-
-    if (!updatedUser) {
-      return res.status(404).json({ error: 'User not found' });
-    } 
-
-    res.status(200).json({ message: '✅ User updated successfully', user: updatedUser });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to update user' });
-  }
-});
+router.get('/', userController.getAllUsers);
+router.get('/:id', userController.getUserById);
+router.put('/:id', userController.updateUser);
+router.delete('/:id', userController.deleteUser);
 
 module.exports = router;

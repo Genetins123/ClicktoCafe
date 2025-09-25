@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Header from "../component/Header";
 import FavoritesPage from "./FavoritesPage";
+import OrdersPage from "./OrdersPage";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("orders");
@@ -68,13 +69,12 @@ export default function ProfilePage() {
      
       <div className="min-h-screen bg-[#f97316] ">
         {/* Banner */}
-        <Header />
 
         <div className=" text-white p-6 flex justify-between items-center">
           
           <div>
             
-            <h1 className="text-2xl font-bold">{user?.name}</h1>
+            <h1 className="text-2xl  font-bold">{user?.username}</h1>
             <p>{user?.phone} · {user?.email}</p>
           </div>
           <button
@@ -86,7 +86,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Layout */}
-        <div className="flex bg-white mx-auto  max-w-6xl">
+        <div className="flex bg-[#1a1a1a] mx-auto  max-w-6xl">
           {/* Sidebar */}
           <div className="w-64 bg-white shadow-md p-4 pb-60 space-y-4">
             <button 
@@ -115,8 +115,9 @@ export default function ProfilePage() {
           <div className="flex-1 p-6">
             {activeTab === "orders" && (
               <div>
-                <h2 className="text-xl font-bold mb-4">Your Orders</h2>
-                <p className="text-gray-500">Your orders will be listed here.</p>
+                <OrdersPage />
+                {/* <h2 className="text-xl font-bold mb-4">Your Orders</h2>
+                <p className="text-gray-500">Your orders will be listed here.</p> */}
               </div>
             )}
             {activeTab === "favourites" && (
@@ -128,13 +129,13 @@ export default function ProfilePage() {
             )}
             {activeTab === "payments" && (
               <div>
-                <h2 className="text-xl font-bold mb-4">Payments</h2>
+                <h2 className="text-xl text-white font-bold mb-4">Payments</h2>
                 <p className="text-gray-500">Your payment methods will appear here.</p>
               </div>
             )}
             {activeTab === "settings" && (
               <div>
-                <h2 className="text-xl font-bold mb-4">Settings</h2>
+                <h2 className="text-xl text-white font-bold mb-4">Settings</h2>
                 <p className="text-gray-500">Update your account settings here.</p>
               </div>
             )}
@@ -161,13 +162,13 @@ export default function ProfilePage() {
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
-            {/* <input
+            <input
               type="text"
               placeholder="Phone"
               className="w-full border p-2 mb-3 rounded"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-            /> */}
+            />
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setIsEditing(false)}

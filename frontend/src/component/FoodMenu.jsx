@@ -1,5 +1,7 @@
-import { useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react"; // icon package
+import React from "react";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 import p4 from "../assets/p4.png";
 import p5 from "../assets/p5.png";
@@ -29,84 +31,64 @@ const foodItems = [
   { name: "Burger", img: p15 },
 ];
 
-export default function FoodMenu() {
-  const scrollRef = useRef(null);
+// Custom Arrows with hidden by default, shown on hover
+const PrevArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={`${className} opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer`}
+      style={{ ...style }}
+      onClick={onClick}
+    />
+  );
+};
 
-  const scroll = (direction) => {
-    if (scrollRef.current) {
-      const { clientWidth } = scrollRef.current;
-      scrollRef.current.scrollBy({
-        left: direction === "left" ? -clientWidth : clientWidth,
-        behavior: "smooth",
-      });
-    }
+const NextArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={`${className} opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer`}
+      style={{ ...style }}
+      onClick={onClick}
+    />
+  );
+};
+
+export default function FoodMenuSlider() {
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 6,
+    slidesToScroll: 3,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    arrows: true,
+    prevArrow: <PrevArrow />,
+    nextArrow: <NextArrow />,
+    responsive: [
+      { breakpoint: 1024, settings: { slidesToShow: 4, slidesToScroll: 2 } },
+      { breakpoint: 768, settings: { slidesToShow: 2, slidesToScroll: 1 } },
+      { breakpoint: 480, settings: { slidesToShow: 1, slidesToScroll: 1 } },
+    ],
   };
 
   return (
-    <div className="w-full relative">
-      <h2 className="text-lg text-center font-semibold mb-4">What's on your mind?</h2>
+    <div className="w-full relative group">
+      <h2 className="text-lg font-semibold mb-4">What's on your mind?</h2>
 
-      {/* Mobile: 4x2 swipe grid */}
-      <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide md:hidden">
-        {Array.from({ length: Math.ceil(foodItems.length / 8) }).map(
-          (_, pageIndex) => {
-            const pageItems = foodItems.slice(pageIndex * 8, (pageIndex + 1) * 8);
-            return (
-              <div
-                key={pageIndex}
-                className="min-w-full grid grid-cols-4 gap-4 snap-center p-2"
-              >
-                {pageItems.map((item, idx) => (
-                  <div key={idx} className="text-center">
-                    <img
-                      src={item.img}
-                      alt={item.name}
-                      className="w-16 h-16 mx-auto rounded-full object-cover"
-                    />
-                    <p className="mt-1 text-sm">{item.name}</p>
-                  </div>
-                ))}
-              </div>
-            );
-          }
-        )}
-      </div>
-
-      {/* Desktop: horizontal scroll with arrows */}
-      <div className="hidden max-w-7xl md:block relative">
-        {/* left arrow */}
-        <button
-          onClick={() => scroll("left")}
-          className="absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full p-2 z-10"
-        >
-          <ChevronLeft className="w-6 h-6" />
-        </button>
-
-        {/* scrollable items */}
-        <div
-          ref={scrollRef}
-          className="flex overflow-x-auto space-x-4  scrollbar-hide scroll-smooth"
-        >
-          {foodItems.map((item, idx) => (
-            <div key={idx} className="flex-shrink-0  w-40 text-center">
-              <img
-                src={item.img}
-                alt={item.name}
-                className="w-24 h-24 mx-auto rounded-full object-cover"
-              />
-              <p className="mt-2 text-base">{item.name}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* right arrow */}
-        <button
-          onClick={() => scroll("right")}
-          className="absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full p-2 z-10"
-        >
-          <ChevronRight className="w-6 h-6" />
-        </button>
-      </div>
+      <Slider {...settings}>
+        {foodItems.map((item, idx) => (
+          <div key={idx} className="p-3 text-center">
+            <img
+              src={item.img}
+              alt={item.name}
+              className="w-24 h-24 mx-auto rounded-full object-cover"
+            />
+            <p className="mt-2 text-base">{item.name}</p>
+          </div>
+        ))}
+      </Slider>
     </div>
   );
 }

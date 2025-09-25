@@ -25,27 +25,31 @@ const Footer = () => {
       </div>
 
       {/* Top Links */}
-      <div className="container mx-auto max-w-6xl mt-4 text-lg text-gray-400 flex text-center md:text-left justify-center items-center border-b border-gray-700 pb-5">
-        <a href="#" className="mr-6 hover:text-orange-400">Open Restaurant</a> |
-        <a href="#" className="mx-6 hover:text-orange-400">Become A Delivery Man</a> |
-        <a href="#" className="mx-6 hover:text-orange-400">Profile</a> |
-        <a href="#" className="ml-6 hover:text-orange-400">Help & Support</a>
-      </div>
+      <div className="container mx-auto max-w-6xl mt-4 text-sm sm:text-base text-gray-400 flex flex-wrap text-center md:text-left justify-center items-center border-b border-gray-700 pb-5 space-x-2 sm:space-x-4">
+  <a href="#" className="hover:text-orange-400">Open Restaurant</a>
+  <span className="hidden sm:inline">|</span>
+  <a href="#" className="hover:text-orange-400">Become A Delivery Man</a>
+  <span className="hidden sm:inline">|</span>
+  <a href="#" className="hover:text-orange-400">Profile</a>
+  <span className="hidden sm:inline">|</span>
+  <a href="#" className="hover:text-orange-400">Help & Support</a>
+</div>
+
 
       {/* Links Section */}
       <div className="container mx-auto max-w-6xl flex flex-col md:flex-row justify-center mt-6 items-start">
         {/* Left Section */}
         <div className="mb-6 md:mb-0 w-full md:w-1/3 text-center md:text-left">
           <div className="text-orange-400 font-bold text-2xl mb-3">ClickToCafe</div>
-          <p className="text-lg text-gray-400 mb-2">is Best Delivery Service Near You</p>
+          <p className="text-sm md:text-lg text-gray-400 mb-2">is Best Delivery Service Near You</p>
           <div className="flex items-center justify-center md:justify-start space-x-2 mb-1">
-            <span className="text-gray-400 text-lg">🏠 House: 00, Road: 00, City-0000, Country</span>
+            <span className="text-gray-400 text-sm md:text-lg">🏠 House: 00, Road: 00, City-0000, Country</span>
           </div>
           <div className="flex items-center justify-center md:justify-start space-x-2 mb-1">
-            <span className="text-gray-400 text-lg">📧 admin@gmail.com</span>
+            <span className="text-gray-400 text-sm md:text-lg">📧 admin@gmail.com</span>
           </div>
           <div className="flex items-center justify-center md:justify-start space-x-2 mb-1">
-            <span className="text-gray-400 text-lg">📞 +88017-00000000</span>
+            <span className="text-gray-400 text-sm md:text-lg">📞 +88017-00000000</span>
           </div>
           <div className="flex justify-center md:justify-start space-x-3 mt-3">
             <a href="https://play.google.com" target="_blank" rel="noopener noreferrer">
@@ -70,7 +74,7 @@ const Footer = () => {
           </div>
           <div className="text-center md:text-left">
             <h3 className="text-lg font-semibold text-gray-300 mb-2">Quick Links</h3>
-            <ul className="text-md text-gray-400 space-y-2">
+            <ul className="text-sm md:text-md text-gray-400 space-y-2">
               <li><a href="https://example.com/new-restaurants" className="hover:text-orange-400">New Restaurants</a></li>
               <li><a href="https://example.com/popular-restaurants" className="hover:text-orange-400">Popular Restaurants</a></li>
               <li><a href="https://example.com/best-foods" className="hover:text-orange-400">Best Reviewed Foods</a></li>
@@ -81,8 +85,8 @@ const Footer = () => {
 
         {/* Right Section */}
         <div className="w-full md:w-1/3 text-center md:text-left">
-          <h3 className="text-lg font-semibold text-gray-300 mb-2">Other</h3>
-          <ul className="text-md text-gray-400 space-y-2">
+          <h3 className="md:text-lg font-semibold text-gray-300 mb-2">Other</h3>
+          <ul className="md:text-md text-sm text-gray-400 space-y-2">
             <li>Privacy Policy</li>
             <li>Term & Conditions</li>
             <li>Refund Policy</li>
@@ -91,7 +95,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="text-lg text-gray-400 text-center mt-6">
+      <div className="text-sm md:text-lg text-gray-400 text-center mt-6">
         Copyright © 2025 ClickToCafe. All rights reserved
       </div>
     </footer>

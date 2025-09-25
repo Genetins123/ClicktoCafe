@@ -10,7 +10,7 @@ const getRestaurants = async (req, res) => {
   }
 };
 
-// Get foods by restaurant
+// Get foods by restaurant (with restaurant details)
 const getFoodsByRestaurant = async (req, res) => {
   try {
     const { id } = req.params;
@@ -18,11 +18,12 @@ const getFoodsByRestaurant = async (req, res) => {
     if (!restaurant) {
       return res.status(404).json({ message: "Restaurant not found" });
     }
-    res.json(restaurant.foods);
+
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 // Create restaurant (✅ Prevent duplicates)
 const createRestaurant = async (req, res) => {

@@ -85,158 +85,137 @@ function RestaurantList() {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <h2 className="text-2xl text-center font-bold mb-6">Restaurant List</h2>
+      <h2 className="text-2xl text-center text-orange-500 font-bold mb-6">Restaurant List</h2>
 
-      <table className="min-w-full bg-white shadow-lg rounded-lg overflow-hidden">
-        <thead>
-          <tr className="bg-gray-200 text-gray-700 text-center">
-            <th className="py-3 px-4">#</th>
-            <th className="py-3 px-4">Name</th>
-            <th className="py-3 px-4">Image</th>
-            <th className="py-3 px-4">Cuisine</th>
-            <th className="py-3 px-4">Rating</th>
-            <th className="py-3 px-4">Delivery Time</th>
-            <th className="py-3 px-4">Offer</th>
-            <th className="py-3 px-4">Delivery Type</th>
-            <th className="py-3 px-4">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {restaurants.map((restaurant, index) => (
-            <tr
-              key={restaurant._id || index}
-              className="border-b hover:bg-gray-50 text-center"
-            >
-              {editId === restaurant._id ? (
-                <>
-                  <td className="py-2 px-4">{index + 1}</td>
-                  <td className="py-2 px-4">
-                    <input
-                      type="text"
-                      value={editForm.name}
-                      onChange={(e) =>
-                        setEditForm({ ...editForm, name: e.target.value })
-                      }
-                      className="border p-1 rounded w-full"
-                    />
-                  </td>
-                  <td className="py-2 px-4">
-                    <input
-                      type="text"
-                      value={editForm.image_url}
-                      onChange={(e) =>
-                        setEditForm({ ...editForm, image_url: e.target.value })
-                      }
-                      className="border p-1 rounded w-full"
-                    />
-                  </td>
-                  <td className="py-2 px-4">
-                    <input
-                      type="text"
-                      value={editForm.cuisine}
-                      onChange={(e) =>
-                        setEditForm({ ...editForm, cuisine: e.target.value })
-                      }
-                      className="border p-1 rounded w-full"
-                    />
-                  </td>
-                  <td className="py-2 px-4">
-                    <input
-                      type="number"
-                      value={editForm.rating}
-                      onChange={(e) =>
-                        setEditForm({ ...editForm, rating: e.target.value })
-                      }
-                      className="border p-1 rounded w-full"
-                    />
-                  </td>
-                  <td className="py-2 px-4">
-                    <input
-                      type="text"
-                      value={editForm.delivery_time}
-                      onChange={(e) =>
-                        setEditForm({
-                          ...editForm,
-                          delivery_time: e.target.value,
-                        })
-                      }
-                      className="border p-1 rounded w-full"
-                    />
-                  </td>
-                  <td className="py-2 px-4">
-                    <input
-                      type="text"
-                      value={editForm.offer}
-                      onChange={(e) =>
-                        setEditForm({ ...editForm, offer: e.target.value })
-                      }
-                      className="border p-1 rounded w-full"
-                    />
-                  </td>
-                  <td className="py-2 px-4">
-                    <input
-                      type="text"
-                      value={editForm.delivery_type}
-                      onChange={(e) =>
-                        setEditForm({
-                          ...editForm,
-                          delivery_type: e.target.value,
-                        })
-                      }
-                      className="border p-1 rounded w-full"
-                    />
-                  </td>
-                  <td className="py-2 px-4 space-x-2">
-                    <button
-                      onClick={() => handleSave(restaurant._id)}
-                      className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => setEditId(null)}
-                      className="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500 transition"
-                    >
-                      Cancel
-                    </button>
-                  </td>
-                </>
-              ) : (
-                <>
-                  <td className="py-2 px-4">{index + 1}</td>
-                  <td className="py-2 px-4 font-medium">{restaurant.name}</td>
-                  <td className="py-2 px-4">
-                    <img
-                      src={restaurant.image_url}
-                      alt={restaurant.name}
-                      className="h-12 w-12 object-cover rounded-full mx-auto"
-                    />
-                  </td>
-                  <td className="py-2 px-4">{restaurant.cuisine}</td>
-                  <td className="py-2 px-4">{restaurant.rating}</td>
-                  <td className="py-2 px-4">{restaurant.delivery_time}</td>
-                  <td className="py-2 px-4">{restaurant.offer}</td>
-                  <td className="py-2 px-4">{restaurant.delivery_type}</td>
-                  <td className="py-2 px-4 space-x-2">
-                    <button
-                      onClick={() => handleEdit(restaurant)}
-                      className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(restaurant._id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </>
-              )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+  <table className="min-w-full bg-white shadow rounded overflow-hidden text-sm">
+  <thead>
+    <tr className="bg-gray-200 text-gray-700 text-center text-sm">
+      <th className="py-2 px-2">#</th>
+      <th className="py-2 px-2">Name</th>
+      <th className="py-2 px-2">Image</th>
+      <th className="py-2 px-2">Cuisine</th>
+      <th className="py-2 px-2">Rating</th>
+      <th className="py-2 px-2">Delivery Time</th>
+      <th className="py-2 px-2">Offer</th>
+      <th className="py-2 px-2">Delivery Type</th>
+      <th className="py-2 px-2">Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {restaurants.map((restaurant, index) => (
+      <tr key={restaurant._id || index} className="border-b hover:bg-gray-50 text-center text-sm">
+        {editId === restaurant._id ? (
+          <>
+            <td className="py-1 px-2">{index + 1}</td>
+            <td className="py-1 px-2">
+              <input
+                type="text"
+                value={editForm.name}
+                onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                className="border p-1 rounded w-full text-sm"
+              />
+            </td>
+            <td className="py-1 px-2">
+              <input
+                type="text"
+                value={editForm.image_url}
+                onChange={(e) => setEditForm({ ...editForm, image_url: e.target.value })}
+                className="border p-1 rounded w-full text-sm"
+              />
+            </td>
+            <td className="py-1 px-2">
+              <input
+                type="text"
+                value={editForm.cuisine}
+                onChange={(e) => setEditForm({ ...editForm, cuisine: e.target.value })}
+                className="border p-1 rounded w-full text-sm"
+              />
+            </td>
+            <td className="py-1 px-2">
+              <input
+                type="number"
+                value={editForm.rating}
+                onChange={(e) => setEditForm({ ...editForm, rating: e.target.value })}
+                className="border p-1 rounded w-full text-sm"
+              />
+            </td>
+            <td className="py-1 px-2">
+              <input
+                type="text"
+                value={editForm.delivery_time}
+                onChange={(e) => setEditForm({ ...editForm, delivery_time: e.target.value })}
+                className="border p-1 rounded w-full text-sm"
+              />
+            </td>
+            <td className="py-1 px-2">
+              <input
+                type="text"
+                value={editForm.offer}
+                onChange={(e) => setEditForm({ ...editForm, offer: e.target.value })}
+                className="border p-1 rounded w-full text-sm"
+              />
+            </td>
+            <td className="py-1 px-2">
+              <input
+                type="text"
+                value={editForm.delivery_type}
+                onChange={(e) => setEditForm({ ...editForm, delivery_type: e.target.value })}
+                className="border p-1 rounded w-full text-sm"
+              />
+            </td>
+            <td className="py-1 px-2 space-x-1">
+              <button
+                onClick={() => handleSave(restaurant._id)}
+                className="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => setEditId(null)}
+                className="bg-gray-400 text-white px-2 py-1 rounded text-xs hover:bg-gray-500"
+              >
+                Cancel
+              </button>
+            </td>
+          </>
+        ) : (
+          <>
+            <td className="py-1 px-2">{index + 1}</td>
+            <td className="py-1 px-2 font-medium">{restaurant.name}</td>
+            <td className="py-1 px-2">
+              <img
+                src={restaurant.image_url}
+                alt={restaurant.name}
+                className="h-8 w-8 object-cover rounded-full mx-auto"
+              />
+            </td>
+            <td className="py-1 px-2">{restaurant.cuisine}</td>
+            <td className="py-1 px-2">{restaurant.rating}</td>
+            <td className="py-1 px-2">{restaurant.delivery_time}</td>
+            <td className="py-1 px-2">{restaurant.offer}</td>
+            <td className="py-1 px-2">{restaurant.delivery_type}</td>
+            <td className="py-1 px-2 space-x-1">
+              <button
+                onClick={() => handleEdit(restaurant)}
+                className="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDelete(restaurant._id)}
+                className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
+              >
+                Delete
+              </button>
+            </td>
+          </>
+        )}
+      </tr>
+    ))}
+  </tbody>
+</table>
+
 
       {restaurants.length === 0 && (
         <p className="text-center text-gray-500 mt-6">No restaurants found.</p>

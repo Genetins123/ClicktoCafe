@@ -15,8 +15,7 @@ const Slide = () => {
     autoplaySpeed: 2000, // Slide every 3 seconds (adjust as needed)
     centerPadding: '0',
     variableWidth: false,
-    // nextArrow: <button className="slick-arrow slick-next">Next</button>,
-    // prevArrow: <button className="slick-arrow slick-prev">Previous</button>,
+    arrows: false,
     responsive: [
       {
         breakpoint: 1024,
@@ -28,6 +27,7 @@ const Slide = () => {
         breakpoint: 600,
         settings: {
           slidesToShow: 1,
+          
         },
       },
     ],
@@ -73,18 +73,18 @@ const Slide = () => {
   ];
 
   return (
-    <div className="flex justify-center items-center p-20">
+    <div className="flex justify-center items-center m-5">
       <div className="w-full max-w-6xl">
         <Slider {...settings}>
           {slides.map((slide) => (
             <div key={slide.id} className="px-2">
-                <img
-                  src={slide.image}
-                  alt={`Slide ${slide.id}`}
-                  className="w-96 h-42 object-cover rounded-t-lg"
-                />
-                
-              
+              <img
+                src={slide.image}
+                alt={`Slide ${slide.id}`}
+                className="w-96 h-42 object-cover rounded-t-lg"
+              />
+
+
             </div>
           ))}
         </Slider>
