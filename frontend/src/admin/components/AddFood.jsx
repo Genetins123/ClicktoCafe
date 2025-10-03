@@ -11,6 +11,7 @@ export default function AdminAddFood() {
     description: "",
     rating: "",
     offer: "",
+    foodType: "", // 🔹 Veg / Non-Veg field
   });
 
   const [restaurants, setRestaurants] = useState([]);
@@ -49,6 +50,7 @@ export default function AdminAddFood() {
         description: "",
         rating: "",
         offer: "",
+        foodType: "", // reset panna
       });
     } catch (error) {
       console.error(error);
@@ -96,7 +98,7 @@ export default function AdminAddFood() {
           className="w-full p-2 border rounded"
         />
 
-        {/* 🔹 New Fields */}
+        {/* 🔹 Description */}
         <textarea
           name="description"
           placeholder="Description"
@@ -107,7 +109,7 @@ export default function AdminAddFood() {
         />
 
         <input
-          type="number"
+          type="float"
           name="rating"
           placeholder="Rating (1-5)"
           value={formData.rating}
@@ -125,6 +127,19 @@ export default function AdminAddFood() {
           onChange={handleChange}
           className="w-full p-2 border rounded"
         />
+
+        {/* 🔹 Food Type Dropdown */}
+        <select
+          name="foodType"
+          value={formData.foodType}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+          required
+        >
+          <option value="">-- Select Food Type --</option>
+          <option value="veg">Veg</option>
+          <option value="non-veg">Non-Veg</option>
+        </select>
 
         {/* 🔹 Restaurant Dropdown */}
         <select

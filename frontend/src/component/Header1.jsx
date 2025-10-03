@@ -5,8 +5,12 @@ import { Link } from "react-router-dom";
 const Header1 = () => {
   const [openMenu, setOpenMenu] = useState(null);
   const [restaurantList, setRestaurantList] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const headerRef = useRef(null); // for click outside
+  const [foodList, setFoodList] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const headerRef = useRef(null);
 
   const menuItems = {
     categories: [
@@ -29,20 +33,50 @@ const Header1 = () => {
     ],
   };
 
-  // Fetch restaurants
+  // Fetch restaurants and foods initially
   useEffect(() => {
-    setIsLoading(true);
-    fetch("http://localhost:5000/api/restaurants")
-      .then((res) => res.json())
-      .then((data) => {
-        setRestaurantList(data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("Failed to load restaurants:", error);
-        setIsLoading(false);
-      });
+    const fetchData = async () => {
+      try {
+        const [restaurantsRes, foodsRes] = await Promise.all([
+          fetch("http://localhost:5000/api/restaurants"),
+          fetch("http://localhost:5000/api/foods"),
+        ]);
+        const restaurantsData = await restaurantsRes.json();
+        const foodsData = await foodsRes.json();
+
+        setRestaurantList(restaurantsData);
+        setFoodList(foodsData);
+      } catch (err) {
+        console.error("Failed to fetch data:", err);
+      }
+    };
+
+    fetchData();
   }, []);
+
+  // Handle search
+  useEffect(() => {
+    if (!searchTerm) {
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+
+    const lowerQuery = searchTerm.toLowerCase();
+const filteredRestaurants = restaurantList
+  .filter((r) => r.name.toLowerCase().includes(lowerQuery))
+  .map((r) => ({ ...r, type: "restaurant" }));  // ← add type
+
+const filteredFoods = foodList
+  .filter((f) => f.name.toLowerCase().includes(lowerQuery))
+  .map((f) => ({ ...f, type: "food" }));  // ← add type
+
+setSearchResults([...filteredRestaurants, ...filteredFoods]);
+
+    setIsSearching(false);
+  }, [searchTerm, restaurantList, foodList]);
 
   // Click outside to close dropdown
   useEffect(() => {
@@ -125,18 +159,13 @@ const Header1 = () => {
 
             {openMenu === "restaurants" && (
               <div className="absolute top-full left-0 w-[720px] bg-[#292525] rounded-xl border border-gray-600 shadow-lg p-6 grid grid-cols-3 gap-6 z-50 transition-all duration-200 ease-in-out">
-                {/* Restaurants List */}
                 <div className="col-span-2 grid grid-cols-2 gap-4 max-h-80 overflow-auto">
-                  {isLoading ? (
-                    <div className="col-span-2 flex justify-center items-center p-4">
-                      <Loader2 className="animate-spin mr-2" /> Loading...
-                    </div>
-                  ) : restaurantList.length > 0 ? (
+                  {restaurantList.length > 0 ? (
                     restaurantList.map((item, idx) => (
                       <Link
                         key={idx}
                         to={`/restaurant/${item._id}`}
-                        className="flex gap-3 p-3 rounded-lg hover:bg-gray-700 items-center    cursor-pointer transition"
+                        className="flex gap-3 p-3 rounded-lg hover:bg-gray-700 items-center cursor-pointer transition"
                       >
                         <div className="w-10 h-10 bg-white rounded-md flex items-center justify-center overflow-hidden">
                           {item.image_url ? (
@@ -157,7 +186,6 @@ const Header1 = () => {
                   )}
                 </div>
 
-                {/* Promo Section */}
                 <div className="flex flex-col items-center justify-center rounded-lg">
                   <img
                     src="https://stackfood-react.6amtech.com/_next/static/media/resturant.88ad40dd.png"
@@ -176,19 +204,65 @@ const Header1 = () => {
         </nav>
 
         {/* Right Side - Search */}
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <Search
-              className="absolute text-sm left-3 top-2.5 text-gray-400"
-              size={18}
-            />
-            <input
-              type="text"
-              placeholder="Search foods and restaurants..."
-              className="bg-[#0f172a] text-sm text-white pl-10 pr-4 py-2 rounded-lg w-72 focus:outline-none focus:ring-2 focus:ring-orange-500"
-            />
-          </div>
+        <div className="relative">
+          <Search
+            className="absolute text-sm left-3 top-2.5 text-gray-400"
+            size={18}
+          />
+          <input
+            type="text"
+            placeholder="Search foods and restaurants..."
+            className="bg-[#0f172a] text-sm text-white pl-10 pr-4 py-2 rounded-lg w-72 focus:outline-none focus:ring-2 focus:ring-orange-500"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+
+          {/* Autocomplete dropdown */}
+          {searchTerm && (
+            <div className="absolute top-full left-0 mt-2 w-72 bg-[#292525] rounded-lg border border-gray-600 shadow-lg z-50 max-h-96 overflow-auto">
+              {isSearching ? (
+                <p className="p-2 text-gray-400 flex items-center gap-2">
+                  <Loader2 className="animate-spin" /> Searching...
+                </p>
+              ) : searchResults.length > 0 ? (
+                searchResults.map((item) => (
+                  <Link
+                    key={item._id}
+                    to={
+                      item.type === "restaurant"
+                        ? `/restaurant/${item._id}`
+                        : `/food/${item._id}`
+                    }
+                      onClick={() => setSearchTerm("")} // 👈 add this line
+
+                    className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded-lg transition"
+                  >
+                    <div className="w-10 h-10 bg-gray-800 rounded-md flex items-center justify-center overflow-hidden">
+                      {item.image_url ? (
+                        <img
+                          src={item.image_url}
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-white text-lg">🍽</span>
+                      )}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-white text-sm font-medium">{item.name}</span>
+                      <span className="text-gray-400 text-xs">
+                        {item.type === "restaurant" ? "Restaurant" : "Food"}
+                      </span>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <p className="p-2 text-gray-400">No results found</p>
+              )}
+            </div>
+          )}
         </div>
+
       </div>
     </header>
   );

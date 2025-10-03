@@ -1,18 +1,24 @@
+// src/pages/CheckoutPage.js
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 
 const CheckoutPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { selectedFood } = location.state || {};
+  const { cartItems = [], totalPrice = 0 } = location.state || {};
+  const { clearCart } = useCart();
 
   const [deliveryOption, setDeliveryOption] = useState("home");
   const [deliveryTip, setDeliveryTip] = useState(0);
+  const [address, setAddress] = useState("Q972+VPF, Dhaka, Bangladesh");
+  const [editingAddress, setEditingAddress] = useState(false);
+  const [agree, setAgree] = useState(false);
 
-  if (!selectedFood) {
+  if (cartItems.length === 0) {
     return (
       <div className="text-white p-8">
-        <p>No food selected. Please go back and select a food.</p>
+        <p>No items in cart. Please go back and add food.</p>
         <button
           className="bg-orange-500 text-white px-4 py-2 rounded"
           onClick={() => navigate("/home")}
@@ -23,57 +29,62 @@ const CheckoutPage = () => {
     );
   }
 
-  const subtotal = selectedFood.price * (selectedFood.quantity || 1);
-  const discount = selectedFood.oldPrice
-    ? selectedFood.oldPrice - selectedFood.price
-    : 0;
-  const tax = subtotal * 0.09;
+  const discount = 0;
+  const tax = totalPrice * 0.09;
   const serviceCharge = 10;
   const deliveryFee = deliveryOption === "home" ? 0 : 0;
-  const total =
-    subtotal - discount + tax + serviceCharge + deliveryFee + deliveryTip;
- const handlePlaceOrder = () => {
-  const user = JSON.parse(localStorage.getItem("user")); // 👈 current logged in user
-  if (!user) {
-    alert("Please login to place order!");
-    navigate("/login");
-    return;
-  }
+  const grandTotal =
+    totalPrice - discount + tax + serviceCharge + deliveryFee + deliveryTip;
 
-  alert("✅ Your order has been confirmed!");
+  const handlePlaceOrder = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      alert("Please login to place order!");
+      navigate("/login");
+      return;
+    }
 
-  const orderDetails = {
-    food: selectedFood,
-    subtotal,
-    discount,
-    tax,
-    serviceCharge,
-    deliveryFee,
-    deliveryTip,
-    total,
-    deliveryOption,
-    address: "Q972+VPF, Dhaka, Bangladesh",
-    payment: "Cash On Delivery",
-    date: new Date().toLocaleString(),
+    if (!agree) {
+      alert("⚠️ Please agree to Terms and Conditions before placing order.");
+      return;
+    }
+
+    const orderDetails = {
+      id: Date.now(),
+      cartItems,
+      subtotal: totalPrice,
+      discount,
+      tax,
+      serviceCharge,
+      deliveryFee,
+      deliveryTip,
+      total: grandTotal,
+      deliveryOption,
+      address,
+      payment: "Cash On Delivery",
+      date: new Date().toLocaleString(),
+    };
+
+    const allOrders = JSON.parse(localStorage.getItem("orders") || "{}");
+    const userKey = user._id || user.email || "guest"; // ✅ use _id
+
+    if (!allOrders[userKey]) allOrders[userKey] = [];
+    allOrders[userKey].push(orderDetails);
+    localStorage.setItem("orders", JSON.stringify(allOrders));
+
+    clearCart(); // ✅ empty cart
+    alert("✅ Your order has been confirmed!");
+
+    // navigate to order history with refresh state
+    navigate("/home", { state: { refresh: true } });
   };
-
-  // 🔥 Save order under specific user
-  const allOrders = JSON.parse(localStorage.getItem("orders")) || {};
-  if (!allOrders[user.id]) {
-    allOrders[user.id] = [];
-  }
-  allOrders[user.id].push(orderDetails);
-  localStorage.setItem("orders", JSON.stringify(allOrders));
-
-  navigate("/orders");
-};
 
   return (
     <div className="min-h-screen bg-[#1a1a1a] text-white p-8">
       <h1 className="text-2xl font-bold mb-6">Checkout</h1>
 
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Left Side */}
+        {/* Left Side: Delivery & Payment */}
         <div className="flex-1 space-y-6">
           {/* Delivery Details */}
           <div className="bg-[#272424] p-6 rounded-lg">
@@ -107,12 +118,35 @@ const CheckoutPage = () => {
               </div>
             </div>
 
+            {/* Address */}
             <div>
               <label className="block text-gray-400 mb-2">Delivery Address</label>
-              <div className="bg-[#1c1c1c] p-4 rounded flex items-center justify-between">
-                <span>Q972+VPF, Dhaka, Bangladesh</span>
-                <button className="text-orange-500">Edit</button>
-              </div>
+              {editingAddress ? (
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="w-full p-2 bg-[#1c1c1c] rounded"
+                  />
+                  <button
+                    className="bg-orange-500 px-3 rounded"
+                    onClick={() => setEditingAddress(false)}
+                  >
+                    Save
+                  </button>
+                </div>
+              ) : (
+                <div className="bg-[#1c1c1c] p-4 rounded flex items-center justify-between">
+                  <span>{address}</span>
+                  <button
+                    className="text-orange-500"
+                    onClick={() => setEditingAddress(true)}
+                  >
+                    Edit
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -155,35 +189,42 @@ const CheckoutPage = () => {
         <div className="flex-1 bg-[#272424] p-6 rounded-lg">
           <h2 className="font-semibold text-lg mb-4">Order Summary</h2>
 
-          <div className="flex items-center gap-4 bg-[#1c1c1c] p-4 rounded">
-            <img
-              src={selectedFood.img}
-              alt={selectedFood.title}
-              className="w-20 h-20 object-cover rounded"
-            />
-            <div>
-              <h3 className="font-semibold text-white">{selectedFood.title}</h3>
-              <p>Qty: {selectedFood.quantity || 1}</p>
-              <p className="text-orange-500 font-bold">${selectedFood.price}</p>
+          {cartItems.map((item, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-4 bg-[#1c1c1c] p-4 rounded mb-3"
+            >
+              <img
+                src={item.image_url}
+                alt={item.name}
+                className="w-20 h-20 object-cover rounded"
+              />
+              <div>
+                <h3 className="font-semibold text-white">{item.name}</h3>
+                <p>Qty: {item.qty}</p>
+                <p className="text-orange-500 font-bold">
+                  ₹{(item.price * item.qty).toFixed(2)}
+                </p>
+              </div>
             </div>
-          </div>
+          ))}
 
           <div className="space-y-2 mt-4">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>₹{totalPrice.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span>Discount</span>
-              <span>-${discount.toFixed(2)}</span>
+              <span>-₹{discount.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span>VAT/TAX</span>
-              <span>+${tax.toFixed(2)}</span>
+              <span>+₹{tax.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span>Service Charge</span>
-              <span>+$10.00</span>
+              <span>+₹{serviceCharge.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span>Delivery Fee</span>
@@ -191,29 +232,35 @@ const CheckoutPage = () => {
             </div>
             {deliveryOption === "home" && (
               <div className="flex justify-between">
-                <span>Delivery Man Tip</span>
-                <span>+${deliveryTip.toFixed(2)}</span>
+                <span>Delivery Tip</span>
+                <span>+₹{deliveryTip.toFixed(2)}</span>
               </div>
             )}
           </div>
 
           <hr className="border-gray-700 my-4" />
-
           <div className="flex justify-between font-bold text-lg">
             <span>Total</span>
-            <span>${total.toFixed(2)}</span>
+            <span>₹{grandTotal.toFixed(2)}</span>
           </div>
 
           <div className="mt-4">
             <label className="flex items-center gap-2">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={agree}
+                onChange={() => setAgree(!agree)}
+              />
               I agree to the Terms and Conditions & Privacy Policy
             </label>
           </div>
 
           <button
-            className="w-full bg-orange-500 text-white py-3 rounded mt-4"
+            className={`w-full py-3 rounded mt-4 font-bold ${
+              agree ? "bg-orange-500 hover:bg-orange-600" : "bg-gray-600"
+            }`}
             onClick={handlePlaceOrder}
+            disabled={!agree}
           >
             Place Order
           </button>

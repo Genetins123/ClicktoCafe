@@ -54,10 +54,14 @@ const getFoodsByRestaurant = async (req, res) => {
 // ✅ Add food
 const addFood = async (req, res) => {
   try {
-    const { name, price, category, description, rating, offer, image_url, restaurant } = req.body;
+    const { name, price, category, description, rating, offer, image_url, restaurant, foodType } = req.body;
 
     const restaurantExists = await Restaurant.findById(restaurant);
     if (!restaurantExists) return res.status(400).json({ message: "Invalid restaurant ID" });
+
+    if (!["veg", "non-veg"].includes(foodType)) {
+      return res.status(400).json({ message: "foodType must be 'veg' or 'non-veg'" });
+    }
 
     const newFood = new Food({
       name,
@@ -68,6 +72,7 @@ const addFood = async (req, res) => {
       offer: Number(offer) || 0,
       image_url: image_url || "",
       restaurant,
+      foodType, // ✅ save
     });
 
     await newFood.save();
@@ -77,6 +82,7 @@ const addFood = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
 
 // ✅ Update food
 const updateFood = async (req, res) => {

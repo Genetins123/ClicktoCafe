@@ -1,93 +1,93 @@
-import { createContext, useContext, useState, useEffect } from "react";
+  import { createContext, useContext, useState, useEffect } from "react";
 
-const FavoritesContext = createContext();
+  const FavoritesContext = createContext();
 
-export function FavoritesProvider({ children }) {
-  const [favorites, setFavorites] = useState([]);
-  const [userId, setUserId] = useState(null);
+  export function FavoritesProvider({ children }) {
+    const [favorites, setFavorites] = useState([]);
+    const [userId, setUserId] = useState(null);
 
-  // Load userId from localStorage if logged in
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    // Load userId from localStorage if logged in
+    useEffect(() => {
+      const storedUser = localStorage.getItem("user");
 
-    if (storedUser && storedUser !== "undefined" && storedUser.trim() !== "") {
-      try {
-        const parsed = JSON.parse(storedUser);
-        if (parsed && parsed._id) {
-          setUserId(parsed._id);
-        } else {
+      if (storedUser && storedUser !== "undefined" && storedUser.trim() !== "") {
+        try {
+          const parsed = JSON.parse(storedUser);
+          if (parsed && parsed._id) {
+            setUserId(parsed._id);
+          } else {
+            setUserId(null);
+          }
+        } catch (err) {
+          console.error("Error parsing user in FavoritesContext:", err);
           setUserId(null);
         }
-      } catch (err) {
-        console.error("Error parsing user in FavoritesContext:", err);
+      } else {
         setUserId(null);
       }
-    } else {
-      setUserId(null);
-    }
-  }, []);
+    }, []);
 
-  // Load favorites when userId changes
-  useEffect(() => {
-    if (userId) {
-      try {
-        const stored = localStorage.getItem(`favorites_${userId}`);
-        setFavorites(stored && stored !== "undefined" ? JSON.parse(stored) : []);
-      } catch (err) {
-        console.error("Error parsing favorites:", err);
-        setFavorites([]);
-      }
-    } else {
-      setFavorites([]); // clear if no user
-    }
-  }, [userId]);
-
-  // Save favorites to user-specific key
-  useEffect(() => {
-    if (userId) {
-      try {
-        localStorage.setItem(`favorites_${userId}`, JSON.stringify(favorites));
-      } catch (err) {
-        console.error("Error saving favorites:", err);
-      }
-    }
-  }, [favorites, userId]);
-
-  const toggleFavorite = (food) => {
-    setFavorites((prev) => {
-      const exists = prev.find((item) => item._id === food._id);
-      if (exists) {
-        return prev.filter((item) => item._id !== food._id);
+    // Load favorites when userId changes
+    useEffect(() => {
+      if (userId) {
+        try {
+          const stored = localStorage.getItem(`favorites_${userId}`);
+          setFavorites(stored && stored !== "undefined" ? JSON.parse(stored) : []);
+        } catch (err) {
+          console.error("Error parsing favorites:", err);
+          setFavorites([]);
+        }
       } else {
-        return [...prev, food];
+        setFavorites([]); // clear if no user
       }
-    });
-  };
+    }, [userId]);
 
-  // Called after login
-  const loginUser = (user) => {
-    if (user && user._id) {
-      setUserId(user._id);
-      localStorage.setItem("user", JSON.stringify(user));
-    }
-  };
+    // Save favorites to user-specific key
+    useEffect(() => {
+      if (userId) {
+        try {
+          localStorage.setItem(`favorites_${userId}`, JSON.stringify(favorites));
+        } catch (err) {
+          console.error("Error saving favorites:", err);
+        }
+      }
+    }, [favorites, userId]);
 
-  // Called on logout
-  const logoutUser = () => {
-    setUserId(null);
-    setFavorites([]);
-    localStorage.removeItem("user");
-  };
+    const toggleFavorite = (food) => {
+      setFavorites((prev) => {
+        const exists = prev.find((item) => item._id === food._id);
+        if (exists) {
+          return prev.filter((item) => item._id !== food._id);
+        } else {
+          return [...prev, food];
+        }
+      });
+    };
 
-  return (
-    <FavoritesContext.Provider
-      value={{ favorites, toggleFavorite, loginUser, logoutUser, userId }}
-    >
-      {children}
-    </FavoritesContext.Provider>
-  );
-}
+    // Called after login
+    const loginUser = (user) => {
+      if (user && user._id) {
+        setUserId(user._id);
+        localStorage.setItem("user", JSON.stringify(user));
+      }
+    };
 
-export function useFavorites() {
-  return useContext(FavoritesContext);
-}
+    // Called on logout
+    const logoutUser = () => {
+      setUserId(null);
+      setFavorites([]);
+      localStorage.removeItem("user");
+    };
+
+    return (
+      <FavoritesContext.Provider
+        value={{ favorites, toggleFavorite, loginUser, logoutUser, userId }}
+      >
+        {children}
+      </FavoritesContext.Provider>
+    );
+  }
+
+  export function useFavorites() {
+    return useContext(FavoritesContext);
+  }

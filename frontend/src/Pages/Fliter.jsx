@@ -1,13 +1,8 @@
 import React, { useState } from "react";
-import HomeSlide from "../component/HomeSlide";
-import FoodMenu from "../component/FoodMenu";
-import Letsconnet from "../component/Letsconnect";
-import FoodSection from "../component/FoodCarouselSection";
-import Takeaway from "./Takeaway";
-import FoodsGrid from "../component/FoodsGrid"; // imported updated grid
-import Fliter from "./Fliter";
 
-const Home = () => {
+import FoodsGrid from "../component/FoodsGrid"; // imported updated grid
+
+const Fliter = () => {
   const [activeFilter, setActiveFilter] = useState(null);
 
   const filterButtons = [
@@ -50,17 +45,13 @@ const Home = () => {
           <FoodsGrid activeFilter={activeFilter} />
         ) : (
           <>
-            <HomeSlide />
-            <FoodMenu />
-            <FoodSection />
-            <Takeaway />
+        
           </>
         )}
       </section>
 
-      {!activeFilter && <Letsconnet />}
     </div>
   );
 };
 
-export default Home;
+export default Fliter;

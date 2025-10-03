@@ -62,6 +62,7 @@ function AdminFoodList() {
       image_url: "",
       description: "",
       rating: "",
+      foodType: "",
       offer: "",
     });
   };
@@ -90,163 +91,192 @@ function AdminFoodList() {
       <h2 className="text-2xl text-center text-orange-500 font-bold mb-6">Food List</h2>
 
       <table className="min-w-full bg-white shadow rounded overflow-hidden text-sm">
-  <thead>
-    <tr className="bg-gray-200 text-gray-700 text-center text-sm">
-      <th className="py-2 px-2">#</th>
-      <th className="py-2 px-2">Name</th>
-      <th className="py-2 px-2">Price</th>
-      <th className="py-2 px-2">Category</th>
-      <th className="py-2 px-2">Description</th>
-      <th className="py-2 px-2">Rating</th>
-      <th className="py-2 px-2">Offer (%)</th>
-      <th className="py-2 px-2">Image</th>
-      <th className="py-2 px-2">Restaurant</th>
-      <th className="py-2 px-2">Actions</th>
-    </tr>
-  </thead>
+        <thead>
+          <tr className="bg-gray-200 text-gray-700 text-center text-sm">
+            <th className="py-2 px-2">#</th>
+            <th className="py-2 px-2">Name</th>
+            <th className="py-2 px-2">Price</th>
+            <th className="py-2 px-2">Category</th>
+            <th className="py-2 px-2">Description</th>
+            <th className="py-2 px-2">Rating</th>
+            <th className="py-2 px-2">FoodType</th>
+            <th className="py-2 px-2">Offer (%)</th>
+            <th className="py-2 px-2">Image</th>
+            <th className="py-2 px-2">Restaurant</th>
+            <th className="py-2 px-2">Actions</th>
+          </tr>
+        </thead>
 
-  <tbody>
-    {foods.map((food, index) => (
-      <tr key={food._id} className="border-b hover:bg-gray-50 text-center text-sm">
-        <td className="py-1 px-2">{index + 1}</td>
+        <tbody>
+          {foods.map((food, index) => (
+            <tr key={food._id} className="border-b hover:bg-gray-50 text-center text-sm">
+              <td className="py-1 px-2">{index + 1}</td>
 
-        {editId === food._id ? (
-          <>
-            <td className="py-1 px-2">
-              <input
-                type="text"
-                value={editForm.name}
-                onChange={(e) =>
-                  setEditForm({ ...editForm, name: e.target.value })
-                }
-                className="border px-1 py-1 rounded w-full text-sm"
-              />
-            </td>
-            <td className="py-1 px-2">
-              <input
-                type="number"
-                value={editForm.price}
-                onChange={(e) =>
-                  setEditForm({ ...editForm, price: e.target.value })
-                }
-                className="border px-1 py-1 rounded w-full text-sm"
-              />
-            </td>
-            <td className="py-1 px-2">
-              <input
-                type="text"
-                value={editForm.category}
-                onChange={(e) =>
-                  setEditForm({ ...editForm, category: e.target.value })
-                }
-                className="border px-1 py-1 rounded w-full text-sm"
-              />
-            </td>
-            <td className="py-1 px-2">
-              <input
-                type="text"
-                value={editForm.description}
-                onChange={(e) =>
-                  setEditForm({ ...editForm, description: e.target.value })
-                }
-                className="border px-1 py-1 rounded w-full text-sm"
-              />
-            </td>
-            <td className="py-1 px-2">
-              <input
-                type="number"
-                step="0.1"
-                value={editForm.rating}
-                onChange={(e) =>
-                  setEditForm({ ...editForm, rating: e.target.value })
-                }
-                className="border px-1 py-1 rounded w-full text-sm"
-              />
-            </td>
-            <td className="py-1 px-2">
-              <input
-                type="number"
-                value={editForm.offer}
-                onChange={(e) =>
-                  setEditForm({ ...editForm, offer: e.target.value })
-                }
-                className="border px-1 py-1 rounded w-full text-sm"
-              />
-            </td>
-            <td className="py-1 px-2">
-              <input
-                type="text"
-                value={editForm.image_url}
-                onChange={(e) =>
-                  setEditForm({ ...editForm, image_url: e.target.value })
-                }
-                className="border px-1 py-1 rounded w-full text-sm"
-              />
-            </td>
-          </>
-        ) : (
-          <>
-            <td className="py-1 px-2">{food.name}</td>
-            <td className="py-1 px-2">₹{food.price}</td>
-            <td className="py-1 px-2">{food.category}</td>
-            <td className="py-1 px-2">{food.description || "-"}</td>
-            <td className="py-1 px-2">{food.rating || 0}</td>
-            <td className="py-1 px-2">{food.offer || 0}%</td>
-            <td className="py-1 px-2">
-              {food.image_url ? (
-                <img
-                  src={food.image_url}
-                  alt={food.name}
-                  className="h-8 w-8 object-cover rounded-full mx-auto"
-                />
+              {editId === food._id ? (
+                <>
+                  <td className="py-1 px-2">
+                    <input
+                      type="text"
+                      value={editForm.name}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, name: e.target.value })
+                      }
+                      className="border px-1 py-1 rounded w-full text-sm"
+                    />
+                  </td>
+                  <td className="py-1 px-2">
+                    <input
+                      type="number"
+                      value={editForm.price}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, price: e.target.value })
+                      }
+                      className="border px-1 py-1 rounded w-full text-sm"
+                    />
+                  </td>
+                  <td className="py-1 px-2">
+                    <input
+                      type="text"
+                      value={editForm.category}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, category: e.target.value })
+                      }
+                      className="border px-1 py-1 rounded w-full text-sm"
+                    />
+                  </td>
+                  <td className="py-1 px-2">
+                    <input
+                      type="text"
+                      value={editForm.description}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, description: e.target.value })
+                      }
+                      className="border px-1 py-1 rounded w-full text-sm"
+                    />
+                  </td>
+                  <td className="py-1 px-2">
+                    <input
+                      type="number"
+                      step="0.1"
+                      value={editForm.rating}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, rating: e.target.value })
+                      }
+                      className="border px-1 py-1 rounded w-full text-sm"
+                    />
+                  </td>
+                  <td className="py-1 px-2">
+                    <select
+                      value={editForm.foodType}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, foodType: e.target.value })
+                      }
+                      className="border px-1 py-1 rounded w-full text-sm"
+                    >
+                      <option value="">-- Select --</option>
+                      <option value="veg">Veg</option>
+                      <option value="non-veg">Non-Veg</option>
+                    </select>
+                  </td>
+
+                  <td className="py-1 px-2">
+                    <input
+                      type="number"
+                      value={editForm.offer}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, offer: e.target.value })
+                      }
+                      className="border px-1 py-1 rounded w-full text-sm"
+                    />
+                  </td>
+                  <td className="py-1 px-2">
+                    <input
+                      type="text"
+                      value={editForm.image_url}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, image_url: e.target.value })
+                      }
+                      className="border px-1 py-1 rounded w-full text-sm"
+                    />
+                  </td>
+                </>
               ) : (
-                <span className="text-gray-400 text-xs">No Image</span>
+                <>
+                  <td className="py-1 px-2">{food.name}</td>
+                  <td className="py-1 px-2">₹{food.price}</td>
+                  <td className="py-1 px-2">{food.category}</td>
+                  <td className="py-1 px-2">{food.description || "-"}</td>
+                  <td className="py-1 px-2">{food.rating || 0}</td>
+                  <td className="py-1 px-2">
+                    {food.foodType ? (
+                      <div className="flex items-center justify-center">
+                        <div
+                          className={`w-3 h-3 rounded-full border ${food.foodType === "veg"
+                              ? "bg-green-600 border-green-600"
+                              : "bg-red-600 border-red-600"
+                            }`}
+                        ></div>
+                      </div>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+                  <td className="py-1 px-2">{food.offer || 0}%</td>
+                  <td className="py-1 px-2">
+                    {food.image_url ? (
+                      <img
+                        src={food.image_url}
+                        alt={food.name}
+                        className="h-8 w-8 object-cover rounded-full mx-auto"
+                      />
+                    ) : (
+                      <span className="text-gray-400 text-xs">No Image</span>
+                    )}
+                  </td>
+                </>
               )}
-            </td>
-          </>
-        )}
 
-        <td className="py-1 px-2 font-medium text-sm">
-          {food.restaurant?.name || "N/A"}
-        </td>
+              <td className="py-1 px-2 font-medium text-sm">
+                {food.restaurant?.name || "N/A"}
+              </td>
 
-        <td className="py-1 px-2 space-x-1">
-          {editId === food._id ? (
-            <>
-              <button
-                onClick={() => handleSave(food._id)}
-                className="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600"
-              >
-                Save
-              </button>
-              <button
-                onClick={handleCancel}
-                className="bg-gray-400 text-white px-2 py-1 rounded text-xs hover:bg-gray-500"
-              >
-                Cancel
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={() => handleEdit(food)}
-                className="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDelete(food._id)}
-                className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
-              >
-                Delete
-              </button>
-            </>
-          )}
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+              <td className="py-1 px-2 space-x-1">
+                {editId === food._id ? (
+                  <>
+                    <button
+                      onClick={() => handleSave(food._id)}
+                      className="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={handleCancel}
+                      className="bg-gray-400 text-white px-2 py-1 rounded text-xs hover:bg-gray-500"
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => handleEdit(food)}
+                      className="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(food._id)}
+                      className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
 
       {foods.length === 0 && (

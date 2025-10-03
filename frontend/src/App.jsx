@@ -25,6 +25,7 @@ import Restaurant from './Pages/Restaurant';
 import CheckoutPage from './Pages/CheckoutPage';
 import Categories from './Pages/Categories';
 import OrdersPage from './Pages/OrdersPage';
+import FoodPage from './Pages/Foods';
 
 // Layout wrapper to handle header/footer logic
 const Layout = ({ user, children }) => {
@@ -82,6 +83,7 @@ function App() {
           <Route path="/account" element={<MyAccountPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/restaurant/:id" element={<RestaurantFoods />} />
+          <Route path="/food/:id" element={<FoodPage />} />
           <Route path="/cart" element={<CartPage />} />
         </Routes>
 
